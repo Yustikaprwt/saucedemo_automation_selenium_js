@@ -15,6 +15,7 @@ export const data = {
   problemUser: "problem_user",
   glitchUser: "performance_glitch_user",
   errorUser: "error_user",
+  visualUser: "visual_user",
   password: "secret_sauce",
   invalidPassword: "wrong_password",
   dashboardTitle: "Products",
