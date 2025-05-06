@@ -16,6 +16,7 @@ export const data = {
   glitchUser: "performance_glitch_user",
   errorUser: "error_user",
   visualUser: "visual_user",
+  invalidUsername: "wrong_username",
   password: "secret_sauce",
   invalidPassword: "wrong_password",
   dashboardTitle: "Products",
@@ -25,7 +26,7 @@ export const data = {
 
 export const errorMessage = {
   lockedOutUser: "Epic sadface: Sorry, this user has been locked out.",
-  invalidPassword:
+  invalidInput:
     "Epic sadface: Username and password do not match any user in this service",
   requiredPassword: "Epic sadface: Password is required",
 };
