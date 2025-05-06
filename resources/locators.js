@@ -12,6 +12,7 @@ export const data = {
   standardUser: "standard_user",
   lockedOutUser: "locked_out_user",
   problemUser: "problem_user",
+  glitchUser: "performance_glitch_user",
   password: "secret_sauce",
   invalidPassword: "wrong_password",
   dashboardTitle: "Products",
