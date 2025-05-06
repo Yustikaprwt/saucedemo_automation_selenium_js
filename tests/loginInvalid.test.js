@@ -81,7 +81,7 @@ describe("Login with invalid credentials", async function () {
     }, 30000);
   });
 
-  it.only("LGN_004 - Login account as user with 'performance_glitch_user' username and valid password", async () => {
+  it("LGN_004 - Login account as user with 'performance_glitch_user' username and valid password", async () => {
     await driver.get(BASE_URL);
 
     await driver
@@ -101,6 +101,29 @@ describe("Login with invalid credentials", async function () {
     const loadPageDuration = navigationEnd - navigationStart;
 
     assert.ok(loadPageDuration > 5000);
+  });
+
+  it("LGN_005 - Login account as user with 'error_user' username and valid password", async () => {
+    await driver.get(BASE_URL);
+
+    await driver.findElement(By.id(locators.username)).sendKeys(data.errorUser);
+    await driver.findElement(By.id(locators.password)).sendKeys(data.password);
+    await driver.findElement(By.id(locators.buttonLogin)).click();
+
+    const getUrl = await driver.getCurrentUrl();
+    const dashboardUrl = await expectedUrl.dashboardUrl;
+    assert.equal(getUrl, dashboardUrl);
+
+    const addTshirtButton = await driver.findElement(
+      By.id(locators.addTshirtButton)
+    );
+
+    await addTshirtButton.click();
+
+    const afterClickText = await addTshirtButton.getText();
+    const expectedAfterClickText = await data.addTocartTextButton;
+
+    assert.equal(afterClickText, expectedAfterClickText);
   });
 
   after(async () => await driver.close());
