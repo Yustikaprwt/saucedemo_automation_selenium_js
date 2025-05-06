@@ -126,7 +126,7 @@ describe("Login with invalid credentials", async function () {
     assert.equal(afterClickText, expectedAfterClickText);
   });
 
-  it.only("LGN_006 - Login account as user with 'visual_user' username and valid password", async () => {
+  it("LGN_006 - Login account as user with 'visual_user' username and valid password", async () => {
     await driver.get(BASE_URL);
 
     await driver
@@ -138,6 +138,26 @@ describe("Login with invalid credentials", async function () {
     const getUrl = await driver.getCurrentUrl();
     const dashboardUrl = await expectedUrl.dashboardUrl;
     assert.equal(getUrl, dashboardUrl);
+  });
+
+  it("LGN_007 - Login account as user with 'standard_user' username but with incorect password", async () => {
+    await driver.get(BASE_URL);
+
+    await driver
+      .findElement(By.id(locators.username))
+      .sendKeys(data.standardUser);
+    await driver
+      .findElement(By.id(locators.password))
+      .sendKeys(data.invalidPassword);
+    await driver.findElement(By.id(locators.buttonLogin)).click();
+
+    const getErrorAlertBox = await driver.findElement(
+      By.xpath(locators.errorBoxAllert)
+    );
+    const getErrorText = await getErrorAlertBox.getText();
+
+    const expectedErrorText = await errorMessage.invalidPassword;
+    assert.equal(getErrorText, expectedErrorText);
   });
 
   after(async () => await driver.close());
