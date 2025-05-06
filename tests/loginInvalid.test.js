@@ -148,7 +148,7 @@ describe("Login with invalid credentials", async function () {
       .sendKeys(data.standardUser);
     await driver
       .findElement(By.id(locators.password))
-      .sendKeys(data.invalidPassword);
+      .sendKeys(data.invalidInput);
     await driver.findElement(By.id(locators.buttonLogin)).click();
 
     const getErrorAlertBox = await driver.findElement(
@@ -156,7 +156,7 @@ describe("Login with invalid credentials", async function () {
     );
     const getErrorText = await getErrorAlertBox.getText();
 
-    const expectedErrorText = await errorMessage.invalidPassword;
+    const expectedErrorText = await errorMessage.invalidInput;
     assert.equal(getErrorText, expectedErrorText);
   });
 
@@ -174,6 +174,24 @@ describe("Login with invalid credentials", async function () {
     const getErrorText = await getErrorAlertBox.getText();
 
     const expectedErrorText = await errorMessage.requiredPassword;
+    assert.equal(getErrorText, expectedErrorText);
+  });
+
+  it("LGN_009 - Login account as user by input an invalid username", async () => {
+    await driver.get(BASE_URL);
+
+    await driver
+      .findElement(By.id(locators.username))
+      .sendKeys(data.invalidUsername);
+    await driver.findElement(By.id(locators.password)).sendKeys(data.password);
+    await driver.findElement(By.id(locators.buttonLogin)).click();
+
+    const getErrorAlertBox = await driver.findElement(
+      By.xpath(locators.errorBoxAllert)
+    );
+    const getErrorText = await getErrorAlertBox.getText();
+
+    const expectedErrorText = await errorMessage.invalidInput;
     assert.equal(getErrorText, expectedErrorText);
   });
 
