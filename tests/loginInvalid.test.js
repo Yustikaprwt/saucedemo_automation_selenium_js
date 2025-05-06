@@ -81,5 +81,27 @@ describe("Login with invalid credentials", async function () {
     }, 30000);
   });
 
+  it.only("LGN_004 - Login account as user with 'performance_glitch_user' username and valid password", async () => {
+    await driver.get(BASE_URL);
+
+    await driver
+      .findElement(By.id(locators.username))
+      .sendKeys(data.glitchUser);
+    await driver.findElement(By.id(locators.password)).sendKeys(data.password);
+
+    const navigationStart = Date.now();
+
+    await driver.findElement(By.id(locators.buttonLogin)).click();
+
+    const getUrl = await driver.getCurrentUrl();
+    const dashboardUrl = await expectedUrl.dashboardUrl;
+    assert.equal(getUrl, dashboardUrl);
+
+    const navigationEnd = Date.now();
+    const loadPageDuration = navigationEnd - navigationStart;
+
+    assert.ok(loadPageDuration > 5000);
+  });
+
   after(async () => await driver.close());
 });
