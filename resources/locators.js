@@ -6,6 +6,7 @@ export const locators = {
   errorBoxAllert: '//*[@data-test="error"]',
   addBackpackButton: "add-to-cart-sauce-labs-backpack",
   removeBackpackButton: "remove-sauce-labs-backpack",
+  addTshirtButton: "add-to-cart-sauce-labs-bolt-t-shirt",
 };
 
 export const data = {
@@ -13,10 +14,12 @@ export const data = {
   lockedOutUser: "locked_out_user",
   problemUser: "problem_user",
   glitchUser: "performance_glitch_user",
+  errorUser: "error_user",
   password: "secret_sauce",
   invalidPassword: "wrong_password",
   dashboardTitle: "Products",
   removeProductText: "Remove",
+  addTocartTextButton: "Add to cart",
 };
 
 export const errorMessage = {
