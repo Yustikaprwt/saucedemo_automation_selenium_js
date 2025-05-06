@@ -25,6 +25,8 @@ export const data = {
 
 export const errorMessage = {
   lockedOutUser: "Epic sadface: Sorry, this user has been locked out.",
+  invalidPassword:
+    "Epic sadface: Username and password do not match any user in this service",
 };
 
 export const expectedUrl = {
