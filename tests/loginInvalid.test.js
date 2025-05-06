@@ -195,5 +195,20 @@ describe("Login with invalid credentials", async function () {
     assert.equal(getErrorText, expectedErrorText);
   });
 
+  it("LGN_010 - Login account as user with an empty username and valid password", async () => {
+    await driver.get(BASE_URL);
+
+    await driver.findElement(By.id(locators.password)).sendKeys(data.password);
+    await driver.findElement(By.id(locators.buttonLogin)).click();
+
+    const getErrorAlertBox = await driver.findElement(
+      By.xpath(locators.errorBoxAllert)
+    );
+    const getErrorMessage = await getErrorAlertBox.getText();
+
+    const expectedErrorMessage = await errorMessage.requiredUsername;
+    assert.equal(getErrorMessage, expectedErrorMessage);
+  });
+
   after(async () => await driver.close());
 });
