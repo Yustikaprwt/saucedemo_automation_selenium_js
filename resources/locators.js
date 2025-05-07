@@ -7,6 +7,7 @@ export const locators = {
   addBackpackButton: "add-to-cart-sauce-labs-backpack",
   removeBackpackButton: "remove-sauce-labs-backpack",
   addTshirtButton: "add-to-cart-sauce-labs-bolt-t-shirt",
+  detailProductName: '//*[@data-test="inventory-item-name"]',
 };
 
 export const data = {
@@ -22,6 +23,12 @@ export const data = {
   dashboardTitle: "Products",
   removeProductText: "Remove",
   addTocartTextButton: "Add to cart",
+  backpackDetailName: "Sauce Labs Backpack",
+  bikeLightDetailName: "Sauce Labs Bike Light",
+  boltTshirtDetailName: "Sauce Labs Bolt T-Shirt",
+  fleeceJacketDetailName: "Sauce Labs Fleece Jacket",
+  onesieDetailName: "Sauce Labs Onesie",
+  tshirtDetailName: "Test.allTheThings() T-Shirt (Red)",
 };
 
 export const errorMessage = {
