@@ -8,6 +8,7 @@ export const locators = {
   removeBackpackButton: "remove-sauce-labs-backpack",
   addTshirtButton: "add-to-cart-sauce-labs-bolt-t-shirt",
   detailProductName: '//*[@data-test="inventory-item-name"]',
+  detailPrice: '//*[@data-test="inventory-item-price"]',
 };
 
 export const data = {
@@ -29,6 +30,12 @@ export const data = {
   fleeceJacketDetailName: "Sauce Labs Fleece Jacket",
   onesieDetailName: "Sauce Labs Onesie",
   tshirtDetailName: "Test.allTheThings() T-Shirt (Red)",
+  backpackPrice: "$29.99",
+  bikeLightPrice: "$9.99",
+  boltTshirtPrice: "$15.99",
+  fleeceJacketPrice: "$49.99",
+  onesiePrice: "$7.99",
+  tshirtPrice: "$15.99",
 };
 
 export const errorMessage = {
