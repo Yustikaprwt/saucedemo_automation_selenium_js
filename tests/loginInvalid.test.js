@@ -1,5 +1,5 @@
 const { By, until } = require("selenium-webdriver");
-const driver = require("../resources/driver.js");
+const createDriver = require("../resources/driver.js");
 const assert = require("assert");
 const {
   locators,
@@ -12,9 +12,10 @@ const BASE_URL = process.env.BASE_URL;
 
 describe("Login with invalid credentials", async function () {
   this.timeout(30000);
+  let driver;
 
   before(async () => {
-    console.log("Running test login with invalid credentials");
+    driver = await createDriver();
   });
 
   it("LGN_002 - Login account as user with 'locked_out_user' username and valid password", async () => {
@@ -148,7 +149,7 @@ describe("Login with invalid credentials", async function () {
       .sendKeys(data.standardUser);
     await driver
       .findElement(By.id(locators.password))
-      .sendKeys(data.invalidInput);
+      .sendKeys(data.invalidPassword);
     await driver.findElement(By.id(locators.buttonLogin)).click();
 
     const getErrorAlertBox = await driver.findElement(
@@ -210,5 +211,9 @@ describe("Login with invalid credentials", async function () {
     assert.equal(getErrorMessage, expectedErrorMessage);
   });
 
-  after(async () => await driver.close());
+  after(async () => {
+    if (driver) {
+      await driver.close();
+    }
+  });
 });
