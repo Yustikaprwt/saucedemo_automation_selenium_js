@@ -77,7 +77,7 @@ describe("Test the functionality of view product and product detail", async func
     }
   });
 
-  it.only("PRD_003 - Display product description when a product is clicked", async () => {
+  it("PRD_003 - Display product description when a product is clicked", async () => {
     const getProductImg = await driver.findElement(
       By.className(locators.detailProductsImg)
     );
