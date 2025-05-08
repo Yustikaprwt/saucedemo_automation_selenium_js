@@ -6,9 +6,11 @@ const options = new chrome.Options();
 options.addArguments("--disable-save-password-bubble");
 options.addArguments("--incognito");
 
-const driver = new Builder()
-  .forBrowser("chrome")
-  .setChromeOptions(options)
-  .build();
+const createDriver = async () => {
+  return await new Builder()
+    .forBrowser("chrome")
+    .setChromeOptions(options)
+    .build();
+};
 
-module.exports = driver;
+module.exports = createDriver;
