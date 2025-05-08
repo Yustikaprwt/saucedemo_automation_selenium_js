@@ -7,8 +7,10 @@ export const locators = {
   addBackpackButton: "add-to-cart-sauce-labs-backpack",
   removeBackpackButton: "remove-sauce-labs-backpack",
   addTshirtButton: "add-to-cart-sauce-labs-bolt-t-shirt",
-  detailProductName: '//*[@data-test="inventory-item-name"]',
+  detailProductsName: '//*[@data-test="inventory-item-name"]',
   detailPrice: '//*[@data-test="inventory-item-price"]',
+  detailDesc: '//*[@data-test="inventory-item-desc"]',
+  detailProductsImg: "inventory_item_img",
 };
 
 export const data = {
@@ -36,6 +38,8 @@ export const data = {
   fleeceJacketPrice: "$49.99",
   onesiePrice: "$7.99",
   tshirtPrice: "$15.99",
+  backpackDesc:
+    "carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.",
 };
 
 export const errorMessage = {
@@ -48,4 +52,5 @@ export const errorMessage = {
 
 export const expectedUrl = {
   dashboardUrl: "https://www.saucedemo.com/inventory.html",
+  backpackProductUrl: "https://www.saucedemo.com/inventory-item.html?id=4",
 };
