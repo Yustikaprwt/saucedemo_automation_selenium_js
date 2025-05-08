@@ -11,6 +11,8 @@ export const locators = {
   detailPrice: '//*[@data-test="inventory-item-price"]',
   detailDesc: '//*[@data-test="inventory-item-desc"]',
   detailProductsImg: "inventory_item_img",
+  onesieImage: '//*[@data-test="item-2-img-link"]',
+  backToProductsButton: '//*[@data-test="back-to-products"]',
 };
 
 export const data = {
@@ -40,6 +42,7 @@ export const data = {
   tshirtPrice: "$15.99",
   backpackDesc:
     "carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.",
+  backToProductsButton: "Back to products",
 };
 
 export const errorMessage = {
@@ -53,4 +56,5 @@ export const errorMessage = {
 export const expectedUrl = {
   dashboardUrl: "https://www.saucedemo.com/inventory.html",
   backpackProductUrl: "https://www.saucedemo.com/inventory-item.html?id=4",
+  oneSieProductUrl: "https://www.saucedemo.com/inventory-item.html?id=2",
 };
