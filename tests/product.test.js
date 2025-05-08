@@ -1,4 +1,4 @@
-const { By } = require("selenium-webdriver");
+const { By, until } = require("selenium-webdriver");
 const assert = require("assert");
 const createDriver = require("../resources/driver.js");
 const { locators, data, expectedUrl } = require("../resources/locators.js");
@@ -116,6 +116,31 @@ describe("Test the functionality of view product and product detail", async func
     const getProductPrice = await productPrice.getText();
     const getExpectedProductPrice = await data.backpackPrice;
     assert.equal(getProductPrice, getExpectedProductPrice);
+  });
+
+  it("PRD_004 - Display a 'Back to products' button to return to the Inventory page", async () => {
+    const getProductImg = await driver.wait(
+      until.elementIsVisible(
+        await driver.wait(until.elementLocated(By.xpath(locators.onesieImage)))
+      ),
+      30000
+    );
+
+    await getProductImg.click();
+
+    const getUrl = await driver.getCurrentUrl();
+    const getExpectedUrl = await expectedUrl.oneSieProductUrl;
+    assert.equal(getUrl, getExpectedUrl);
+
+    const getButton = await driver.findElement(
+      By.xpath(locators.backToProductsButton)
+    );
+
+    await getButton.click();
+
+    const getNowUrl = await driver.getCurrentUrl();
+    const getInventoryUrl = await expectedUrl.dashboardUrl;
+    assert.equal(getNowUrl, getInventoryUrl);
   });
 
   after(async () => {
