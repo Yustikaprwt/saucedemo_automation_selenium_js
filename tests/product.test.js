@@ -1,4 +1,4 @@
-const { By } = require("selenium-webdriver");
+const { By, until } = require("selenium-webdriver");
 const assert = require("assert");
 const driver = require("../resources/driver.js");
 const { locators, data, expectedUrl } = require("../resources/locators.js");
@@ -50,7 +50,7 @@ describe("Test the functionality of view product and product detail", async func
     }
   });
 
-  it.only("PRD_002 - Display the products price details on the Inventory page", async () => {
+  it("PRD_002 - Display the products price details on the Inventory page", async () => {
     const productsPrice = await driver.findElements(
       By.xpath(locators.detailPrice)
     );
@@ -75,6 +75,37 @@ describe("Test the functionality of view product and product detail", async func
     for (const expected of expectedProductsPrice) {
       assert.ok(actualProductsPrice.includes(expected));
     }
+  });
+
+  it.only("PRD_003 - Display product description when a product is clicked", async () => {
+    const getProductImg = await driver.findElement(
+      By.className(locators.detailProductsImg)
+    );
+
+    await getProductImg.click();
+
+    const getUrl = await driver.getCurrentUrl();
+    const getExpectedUrl = await expectedUrl.backpackProductUrl;
+    assert.equal(getUrl, getExpectedUrl);
+
+    const productName = await driver.findElement(
+      By.xpath(locators.detailProductsName)
+    );
+    const getProductName = await productName.getText();
+    const expectedProductName = await data.backpackDetailName;
+    assert.equal(getProductName, expectedProductName);
+
+    const productDesc = await driver.findElement(By.xpath(locators.detailDesc));
+    const getProductDesc = await productDesc.getText();
+    const expectedProductDesc = await data.backpackDesc;
+    assert.equal(getProductDesc, expectedProductDesc);
+
+    const productPrice = await driver.findElement(
+      By.xpath(locators.detailPrice)
+    );
+    const getProductPrice = await productPrice.getText();
+    const getExpectedProductPrice = await data.backpackPrice;
+    assert.equal(getProductPrice, getExpectedProductPrice);
   });
 
   after(async () => driver.close());
