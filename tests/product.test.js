@@ -1,6 +1,6 @@
-const { By, until } = require("selenium-webdriver");
+const { By } = require("selenium-webdriver");
 const assert = require("assert");
-const driver = require("../resources/driver.js");
+const createDriver = require("../resources/driver.js");
 const { locators, data, expectedUrl } = require("../resources/locators.js");
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
@@ -8,24 +8,34 @@ const BASE_URL = process.env.BASE_URL;
 describe("Test the functionality of view product and product detail", async function () {
   this.timeout(30000);
 
+  let driver;
+
   before(async () => {
-    await driver.get(BASE_URL);
+    driver = await createDriver();
 
-    await driver
-      .findElement(By.id(locators.username))
-      .sendKeys(data.standardUser);
-    await driver.findElement(By.id(locators.password)).sendKeys(data.password);
-    await driver.findElement(By.id(locators.buttonLogin)).click();
+    try {
+      await driver.get(BASE_URL);
 
-    const getUrl = await driver.getCurrentUrl();
-    const getExpectedUrl = await expectedUrl.dashboardUrl;
+      await driver
+        .findElement(By.id(locators.username))
+        .sendKeys(data.standardUser);
+      await driver
+        .findElement(By.id(locators.password))
+        .sendKeys(data.password);
+      await driver.findElement(By.id(locators.buttonLogin)).click();
 
-    assert.equal(getUrl, getExpectedUrl);
+      const getUrl = await driver.getCurrentUrl();
+      const getExpectedUrl = await expectedUrl.dashboardUrl;
+
+      assert.equal(getUrl, getExpectedUrl);
+    } catch (err) {
+      throw err;
+    }
   });
 
   it("PRD_001 - Display all products on the Inventory page", async () => {
     const detailProductName = await driver.findElements(
-      By.xpath(locators.detailProductName)
+      By.xpath(locators.detailProductsName)
     );
 
     assert.strictEqual(detailProductName.length, 6);
@@ -108,5 +118,9 @@ describe("Test the functionality of view product and product detail", async func
     assert.equal(getProductPrice, getExpectedProductPrice);
   });
 
-  after(async () => driver.close());
+  after(async () => {
+    if (driver) {
+      await driver.close();
+    }
+  });
 });

@@ -1,7 +1,6 @@
 const { By } = require("selenium-webdriver");
-const chrome = require("selenium-webdriver/chrome");
 const assert = require("assert");
-const driver = require("../resources/driver.js");
+const createDriver = require("../resources/driver.js");
 const { locators, data, expectedUrl } = require("../resources/locators.js");
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
@@ -9,7 +8,10 @@ const BASE_URL = process.env.BASE_URL;
 describe("Login with valid credentials", async function () {
   this.timeout(30000);
 
+  let driver;
+
   before(async function () {
+    driver = await createDriver();
     console.log("Running test login with valid credentials");
   });
 
@@ -31,5 +33,9 @@ describe("Login with valid credentials", async function () {
     assert.equal(getTitle, data.dashboardTitle);
   });
 
-  after(async () => await driver.close());
+  after(async () => {
+    if (driver) {
+      await driver.close();
+    }
+  });
 });
