@@ -62,6 +62,30 @@ describe("Test the functionality of cart", async function () {
     assert.ok(getItemName.includes(expectedItemName));
   });
 
+  it("CART_003 - User successfully added multiple product to the cart", async () => {
+    await driver.findElement(By.id(locators.addBackpackButton)).click();
+    await driver.findElement(By.id(locators.addTshirtButton)).click();
+
+    await driver.findElement(By.xpath(locators.cartIcon)).click();
+
+    const getUrl = await driver.getCurrentUrl();
+    const url = expectedUrl.cartPage;
+    assert.ok(getUrl, url);
+
+    const getBadgeIcon = await driver.findElement(By.xpath(locators.cartBadge));
+    const getQuantityOfCart = await getBadgeIcon.getText();
+    const expectedQuantity = "2";
+    assert.equal(getQuantityOfCart, expectedQuantity);
+
+    const getItemList = await driver.findElement(
+      By.className(locators.cartItemList)
+    );
+    const getItemName = await getItemList.getText();
+    const backpackItem = data.backpackDetailName;
+    const tshirtItem = data.tshirtDetailName;
+    assert.ok(getItemName.includes(backpackItem, tshirtItem));
+  });
+
   after(async () => {
     if (driver) {
       await driver.close();
