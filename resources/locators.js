@@ -13,6 +13,8 @@ export const locators = {
   detailProductsImg: "inventory_item_img",
   onesieImage: '//*[@data-test="item-2-img-link"]',
   backToProductsButton: '//*[@data-test="back-to-products"]',
+  sortedIcon: '//*[@data-test="product-sort-container"]',
+  sortAscByName: '//*[@value="az"]',
 };
 
 export const data = {
