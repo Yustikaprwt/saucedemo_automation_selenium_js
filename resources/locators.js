@@ -16,6 +16,7 @@ export const locators = {
   sortedIcon: '//*[@data-test="product-sort-container"]',
   sortAscByName: '//*[@value="az"]',
   sortDescByName: '//*[@value="za"]',
+  sortAscByPrice: '//*[@value="lohi"]'
 };
 
 export const data = {
