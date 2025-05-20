@@ -143,6 +143,32 @@ describe("Test the functionality of view product and product detail", async func
     assert.equal(getNowUrl, getInventoryUrl);
   });
 
+  it("PRD_005 - Display the products that have been sorted by name in ascending order (A-Z)", async () => {
+    await driver.findElement(By.xpath(locators.sortedIcon)).click();
+    await driver.findElement(By.xpath(locators.sortAscByName)).click();
+
+    const expectedProductSorted = [
+      data.backpackDetailName,
+      data.bikeLightDetailName,
+      data.boltTshirtDetailName,
+      data.fleeceJacketDetailName,
+      data.onesieDetailName,
+      data.tshirtDetailName,
+    ];
+
+    const getProductSortedByName = await driver.findElements(
+      By.xpath(locators.detailProductsName)
+    );
+
+    const actualProductSorted = [];
+    for (const products of getProductSortedByName) {
+      const productName = await products.getText();
+      actualProductSorted.push(productName);
+    }
+
+    assert.deepStrictEqual(actualProductSorted, expectedProductSorted);
+  });
+
   after(async () => {
     if (driver) {
       await driver.close();
