@@ -86,6 +86,45 @@ describe("Test the functionality of cart", async function () {
     assert.ok(getItemName.includes(backpackItem, tshirtItem));
   });
 
+  it("CART_004 - User successfully added all products from the Inventory page to the cart", async () => {
+    await driver.findElement(By.id(locators.addBackpackButton)).click();
+    await driver.findElement(By.id(locators.addBikeLightButton)).click();
+    await driver.findElement(By.id(locators.addTshirtButton)).click();
+    await driver.findElement(By.id(locators.addFleeceJacketButton)).click();
+    await driver.findElement(By.id(locators.addOnesieButton)).click();
+    await driver.findElement(By.id(locators.addRedTshirtButton)).click();
+
+    await driver.findElement(By.xpath(locators.cartIcon)).click();
+    const getUrl = await driver.getCurrentUrl();
+    const url = expectedUrl.cartPage;
+    assert.equal(getUrl, url);
+
+    const getBadgeIcon = await driver.findElement(By.xpath(locators.cartBadge));
+    const getQuantityOfCart = await getBadgeIcon.getText();
+    const expectedQuantity = "6";
+    assert.equal(getQuantityOfCart, expectedQuantity);
+
+    const getCartItems = await driver.findElements(
+      By.xpath(locators.detailProductsName)
+    );
+    const expectedCartItems = [
+      data.backpackDetailName,
+      data.bikeLightDetailName,
+      data.boltTshirtDetailName,
+      data.fleeceJacketDetailName,
+      data.onesieDetailName,
+      data.tshirtDetailName,
+    ];
+
+    const actualCartItems = [];
+    for (items of getCartItems) {
+      const itemName = await items.getText();
+      actualCartItems.push(itemName);
+    }
+
+    assert.deepStrictEqual(actualCartItems, expectedCartItems);
+  });
+
   after(async () => {
     if (driver) {
       await driver.close();
