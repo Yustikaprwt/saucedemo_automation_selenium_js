@@ -195,6 +195,32 @@ describe("Test the functionality of view product and product detail", async func
     assert.deepStrictEqual(actualProductDesc, expectedProductDesc);
   });
 
+  it("PRD_007 - Display the products that have been sorted by price in ascending order (low to high)", async () => {
+    await driver.findElement(By.xpath(locators.sortedIcon)).click();
+    await driver.findElement(By.xpath(locators.sortAscByPrice)).click();
+
+    const expectedProductAscByPrice = [
+      data.onesieDetailName,
+      data.bikeLightDetailName,
+      data.boltTshirtDetailName,
+      data.tshirtDetailName,
+      data.backpackDetailName,
+      data.fleeceJacketDetailName,
+    ];
+
+    const getProductAsc = await driver.findElements(
+      By.xpath(locators.detailProductsName)
+    );
+
+    const actualProductAscByPrice = [];
+    for (products of getProductAsc) {
+      const productName = await products.getText();
+      actualProductAscByPrice.push(productName);
+    }
+
+    assert.deepStrictEqual(actualProductAscByPrice, expectedProductAscByPrice);
+  });
+
   after(async () => {
     if (driver) {
       await driver.close();
