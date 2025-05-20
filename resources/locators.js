@@ -20,6 +20,7 @@ export const locators = {
   sortDescByPrice: '//*[@value="hilo"]',
   cartIcon: '//*[@data-test="shopping-cart-link"]',
   cartItem: "cart_item_label",
+  cartItemList: "cart_list",
   cartBadge: '//*[@data-test="shopping-cart-badge"]',
 };
 
