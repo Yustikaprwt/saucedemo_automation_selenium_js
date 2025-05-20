@@ -15,6 +15,7 @@ export const locators = {
   backToProductsButton: '//*[@data-test="back-to-products"]',
   sortedIcon: '//*[@data-test="product-sort-container"]',
   sortAscByName: '//*[@value="az"]',
+  sortDescByName: '//*[@value="za"]',
 };
 
 export const data = {
