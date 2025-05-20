@@ -125,6 +125,29 @@ describe("Test the functionality of cart", async function () {
     assert.deepStrictEqual(actualCartItems, expectedCartItems);
   });
 
+  it("CART_005 - User successfully removed a product from the Cart page", async () => {
+    await driver.findElement(By.id(locators.addBackpackButton)).click();
+
+    await driver.findElement(By.xpath(locators.cartIcon)).click();
+    const getUrl = await driver.getCurrentUrl();
+    const url = expectedUrl.cartPage;
+    assert.equal(getUrl, url);
+
+    const getBadgeIcon = await driver.findElement(By.xpath(locators.cartBadge));
+    const getQuantityOfCart = await getBadgeIcon.getText();
+    const expectedQuantity = "1";
+    assert.equal(getQuantityOfCart, expectedQuantity);
+
+    await driver.findElement(By.id(locators.removeBackpackButton)).click();
+
+    await driver.wait(async () => {
+      const badgeElements = await driver.findElements(
+        By.xpath(locators.cartBadge)
+      );
+      return badgeElements.length === 0;
+    }, 10000);
+  });
+
   after(async () => {
     if (driver) {
       await driver.close();
