@@ -148,6 +148,21 @@ describe("Test the functionality of cart", async function () {
     }, 10000);
   });
 
+  it("CART_006 - Display a 'Continue Shopping' button to return to the Inventory page", async () => {
+    await driver.findElement(By.id(locators.addBackpackButton)).click();
+
+    await driver.findElement(By.xpath(locators.cartIcon)).click();
+    const getUrl = await driver.getCurrentUrl();
+    const url = expectedUrl.cartPage;
+    assert.equal(getUrl, url);
+
+    await driver.findElement(By.id(locators.continueShoppingButton)).click();
+
+    const getCurrentUrl = await driver.getCurrentUrl();
+    const getExpectedUrl = expectedUrl.dashboardUrl;
+    assert.equal(getCurrentUrl, getExpectedUrl);
+  });
+
   after(async () => {
     if (driver) {
       await driver.close();
