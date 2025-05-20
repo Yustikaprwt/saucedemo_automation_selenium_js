@@ -18,6 +18,7 @@ export const locators = {
   sortDescByName: '//*[@value="za"]',
   sortAscByPrice: '//*[@value="lohi"]',
   sortDescByPrice: '//*[@value="hilo"]',
+  cartIcon: '//*[@data-test="shopping-cart-link"]',
 };
 
 export const data = {
@@ -62,4 +63,5 @@ export const expectedUrl = {
   dashboardUrl: "https://www.saucedemo.com/inventory.html",
   backpackProductUrl: "https://www.saucedemo.com/inventory-item.html?id=4",
   oneSieProductUrl: "https://www.saucedemo.com/inventory-item.html?id=2",
+  cartPage: "https://www.saucedemo.com/cart.html",
 };
