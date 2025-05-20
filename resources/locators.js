@@ -26,6 +26,7 @@ export const locators = {
   cartItem: "cart_item_label",
   cartItemList: "cart_list",
   cartBadge: '//*[@data-test="shopping-cart-badge"]',
+  continueShoppingButton: "continue-shopping",
 };
 
 export const data = {
