@@ -50,6 +50,11 @@ describe("Test the functionality of cart", async function () {
     const url = await expectedUrl.cartPage;
     assert.equal(getUrl, url);
 
+    const getBadgeIcon = await driver.findElement(By.xpath(locators.cartBadge));
+    const quantityOfCart = await getBadgeIcon.getText();
+    const expectedQuantity = "1";
+    assert.equal(quantityOfCart, expectedQuantity);
+
     const getItem = await driver.findElement(By.className(locators.cartItem));
     const getItemName = await getItem.getText();
 
