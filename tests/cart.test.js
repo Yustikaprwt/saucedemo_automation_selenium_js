@@ -42,6 +42,21 @@ describe("Test the functionality of cart", async function () {
     assert.equal(getUrl, url);
   });
 
+  it("CART_002 - User successfully added the product to the cart", async () => {
+    await driver.findElement(By.id(locators.addTshirtButton)).click();
+    await driver.findElement(By.xpath(locators.cartIcon)).click();
+
+    const getUrl = await driver.getCurrentUrl();
+    const url = await expectedUrl.cartPage;
+    assert.equal(getUrl, url);
+
+    const getItem = await driver.findElement(By.className(locators.cartItem));
+    const getItemName = await getItem.getText();
+
+    const expectedItemName = data.boltTshirtDetailName;
+    assert.ok(getItemName.includes(expectedItemName));
+  });
+
   after(async () => {
     if (driver) {
       await driver.close();
