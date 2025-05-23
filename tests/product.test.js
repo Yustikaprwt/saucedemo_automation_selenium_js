@@ -1,7 +1,9 @@
 const { By, until } = require("selenium-webdriver");
 const assert = require("assert");
 const createDriver = require("../resources/driver.js");
-const { locators, data, expectedUrl } = require("../resources/locators.js");
+const { locators } = require("../resources/locators.js");
+const { data } = require("../resources/data.js");
+const { expectedUrl } = require("../resources/expectedUrl.js");
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
 
@@ -17,36 +19,34 @@ describe("Test the functionality of view product and product detail", async func
       await driver.get(BASE_URL);
 
       await driver
-        .findElement(By.id(locators.username))
-        .sendKeys(data.standardUser);
+        .findElement(By.id(locators.login.username))
+        .sendKeys(data.login.standardUser);
       await driver
-        .findElement(By.id(locators.password))
-        .sendKeys(data.password);
-      await driver.findElement(By.id(locators.buttonLogin)).click();
+        .findElement(By.id(locators.login.password))
+        .sendKeys(data.login.password);
+      await driver.findElement(By.id(locators.login.buttonLogin)).click();
 
       const getUrl = await driver.getCurrentUrl();
-      const getExpectedUrl = await expectedUrl.dashboardUrl;
-
+      const getExpectedUrl = expectedUrl.inventoryUrl;
       assert.equal(getUrl, getExpectedUrl);
     } catch (err) {
       throw err;
     }
   });
 
-  it("PRD_001 - Display all products on the Inventory page", async () => {
+  it("TC_PRD_001 - Display all products on the Inventory page", async () => {
     const detailProductName = await driver.findElements(
-      By.xpath(locators.detailProductsName)
+      By.xpath(locators.products.detailProductsName)
     );
-
     assert.strictEqual(detailProductName.length, 6);
 
     const expectedListProductName = [
-      data.backpackDetailName,
-      data.bikeLightDetailName,
-      data.boltTshirtDetailName,
-      data.fleeceJacketDetailName,
-      data.onesieDetailName,
-      data.tshirtDetailName,
+      data.products.backpackDetailName,
+      data.products.bikeLightDetailName,
+      data.products.boltTshirtDetailName,
+      data.products.fleeceJacketDetailName,
+      data.products.onesieDetailName,
+      data.products.tshirtDetailName,
     ];
 
     const actualProductName = [];
@@ -60,20 +60,20 @@ describe("Test the functionality of view product and product detail", async func
     }
   });
 
-  it("PRD_002 - Display the products price details on the Inventory page", async () => {
+  it("TC_PRD_002 - Display the products price details on the Inventory page", async () => {
     const productsPrice = await driver.findElements(
-      By.xpath(locators.detailPrice)
+      By.xpath(locators.products.detailPrice)
     );
 
     assert.strictEqual(productsPrice.length, 6);
 
     const expectedProductsPrice = [
-      data.backpackPrice,
-      data.bikeLightPrice,
-      data.boltTshirtPrice,
-      data.fleeceJacketPrice,
-      data.onesiePrice,
-      data.tshirtPrice,
+      data.products.backpackPrice,
+      data.products.bikeLightPrice,
+      data.products.boltTshirtPrice,
+      data.products.fleeceJacketPrice,
+      data.products.onesiePrice,
+      data.products.tshirtPrice,
     ];
 
     const actualProductsPrice = [];
@@ -87,41 +87,45 @@ describe("Test the functionality of view product and product detail", async func
     }
   });
 
-  it("PRD_003 - Display product description when a product is clicked", async () => {
+  it("TC_PRD_003 - Display product description when a product is clicked", async () => {
     const getProductImg = await driver.findElement(
-      By.className(locators.detailProductsImg)
+      By.className(locators.products.detailProductsImg)
     );
 
     await getProductImg.click();
 
     const getUrl = await driver.getCurrentUrl();
-    const getExpectedUrl = await expectedUrl.backpackProductUrl;
+    const getExpectedUrl = expectedUrl.backpackProductUrl;
     assert.equal(getUrl, getExpectedUrl);
 
     const productName = await driver.findElement(
-      By.xpath(locators.detailProductsName)
+      By.xpath(locators.products.detailProductsName)
     );
     const getProductName = await productName.getText();
-    const expectedProductName = await data.backpackDetailName;
+    const expectedProductName = data.products.backpackDetailName;
     assert.equal(getProductName, expectedProductName);
 
-    const productDesc = await driver.findElement(By.xpath(locators.detailDesc));
+    const productDesc = await driver.findElement(
+      By.xpath(locators.products.detailDesc)
+    );
     const getProductDesc = await productDesc.getText();
-    const expectedProductDesc = await data.backpackDesc;
+    const expectedProductDesc = data.products.backpackDesc;
     assert.equal(getProductDesc, expectedProductDesc);
 
     const productPrice = await driver.findElement(
-      By.xpath(locators.detailPrice)
+      By.xpath(locators.products.detailPrice)
     );
     const getProductPrice = await productPrice.getText();
-    const getExpectedProductPrice = await data.backpackPrice;
+    const getExpectedProductPrice = data.products.backpackPrice;
     assert.equal(getProductPrice, getExpectedProductPrice);
   });
 
-  it("PRD_004 - Display a 'Back to products' button to return to the Inventory page", async () => {
+  it("TC_PRD_004 - Display a 'Back to products' button to return to the Inventory page", async () => {
     const getProductImg = await driver.wait(
       until.elementIsVisible(
-        await driver.wait(until.elementLocated(By.xpath(locators.onesieImage)))
+        await driver.wait(
+          until.elementLocated(By.xpath(locators.products.onesieImage))
+        )
       ),
       30000
     );
@@ -129,35 +133,39 @@ describe("Test the functionality of view product and product detail", async func
     await getProductImg.click();
 
     const getUrl = await driver.getCurrentUrl();
-    const getExpectedUrl = await expectedUrl.oneSieProductUrl;
+    const getExpectedUrl = expectedUrl.oneSieProductUrl;
     assert.equal(getUrl, getExpectedUrl);
 
     const getButton = await driver.findElement(
-      By.xpath(locators.backToProductsButton)
+      By.xpath(locators.button.backToProductsButton)
     );
 
     await getButton.click();
 
     const getNowUrl = await driver.getCurrentUrl();
-    const getInventoryUrl = await expectedUrl.dashboardUrl;
+    const getInventoryUrl = expectedUrl.inventoryUrl;
     assert.equal(getNowUrl, getInventoryUrl);
   });
 
-  it("PRD_005 - Display the products that have been sorted by name in ascending order (A-Z)", async () => {
-    await driver.findElement(By.xpath(locators.sortedIcon)).click();
-    await driver.findElement(By.xpath(locators.sortAscByName)).click();
+  it("TC_PRD_005 - Display the products that have been sorted by name in ascending order (A-Z)", async () => {
+    await driver
+      .findElement(By.xpath(locators.sortedDropdown.sortedIcon))
+      .click();
+    await driver
+      .findElement(By.xpath(locators.sortedDropdown.sortAscByName))
+      .click();
 
     const expectedProductSorted = [
-      data.backpackDetailName,
-      data.bikeLightDetailName,
-      data.boltTshirtDetailName,
-      data.fleeceJacketDetailName,
-      data.onesieDetailName,
-      data.tshirtDetailName,
+      data.products.backpackDetailName,
+      data.products.bikeLightDetailName,
+      data.products.boltTshirtDetailName,
+      data.products.fleeceJacketDetailName,
+      data.products.onesieDetailName,
+      data.products.tshirtDetailName,
     ];
 
     const getProductSortedByName = await driver.findElements(
-      By.xpath(locators.detailProductsName)
+      By.xpath(locators.products.detailProductsName)
     );
 
     const actualProductSorted = [];
@@ -169,21 +177,25 @@ describe("Test the functionality of view product and product detail", async func
     assert.deepStrictEqual(actualProductSorted, expectedProductSorted);
   });
 
-  it("PRD_006 - Display the products that have been sorted by name in descending order (Z-A)", async () => {
-    await driver.findElement(By.xpath(locators.sortedIcon)).click();
-    await driver.findElement(By.xpath(locators.sortDescByName)).click();
+  it("TC_PRD_006 - Display the products that have been sorted by name in descending order (Z-A)", async () => {
+    await driver
+      .findElement(By.xpath(locators.sortedDropdown.sortedIcon))
+      .click();
+    await driver
+      .findElement(By.xpath(locators.sortedDropdown.sortDescByName))
+      .click();
 
     const expectedProductDesc = [
-      data.tshirtDetailName,
-      data.onesieDetailName,
-      data.fleeceJacketDetailName,
-      data.boltTshirtDetailName,
-      data.bikeLightDetailName,
-      data.backpackDetailName,
+      data.products.tshirtDetailName,
+      data.products.onesieDetailName,
+      data.products.fleeceJacketDetailName,
+      data.products.boltTshirtDetailName,
+      data.products.bikeLightDetailName,
+      data.products.backpackDetailName,
     ];
 
     const getProductDesc = await driver.findElements(
-      By.xpath(locators.detailProductsName)
+      By.xpath(locators.products.detailProductsName)
     );
 
     const actualProductDesc = [];
@@ -195,21 +207,25 @@ describe("Test the functionality of view product and product detail", async func
     assert.deepStrictEqual(actualProductDesc, expectedProductDesc);
   });
 
-  it("PRD_007 - Display the products that have been sorted by price in ascending order (low to high)", async () => {
-    await driver.findElement(By.xpath(locators.sortedIcon)).click();
-    await driver.findElement(By.xpath(locators.sortAscByPrice)).click();
+  it("TC_PRD_007 - Display the products that have been sorted by price in ascending order (low to high)", async () => {
+    await driver
+      .findElement(By.xpath(locators.sortedDropdown.sortedIcon))
+      .click();
+    await driver
+      .findElement(By.xpath(locators.sortedDropdown.sortAscByPrice))
+      .click();
 
     const expectedProductAscByPrice = [
-      data.onesieDetailName,
-      data.bikeLightDetailName,
-      data.boltTshirtDetailName,
-      data.tshirtDetailName,
-      data.backpackDetailName,
-      data.fleeceJacketDetailName,
+      data.products.onesieDetailName,
+      data.products.bikeLightDetailName,
+      data.products.boltTshirtDetailName,
+      data.products.tshirtDetailName,
+      data.products.backpackDetailName,
+      data.products.fleeceJacketDetailName,
     ];
 
     const getProductAsc = await driver.findElements(
-      By.xpath(locators.detailProductsName)
+      By.xpath(locators.products.detailProductsName)
     );
 
     const actualProductAscByPrice = [];
@@ -221,21 +237,25 @@ describe("Test the functionality of view product and product detail", async func
     assert.deepStrictEqual(actualProductAscByPrice, expectedProductAscByPrice);
   });
 
-  it("PRD_008 - Display the products that have been sorted by price in descending order (high to low)", async () => {
-    await driver.findElement(By.xpath(locators.sortedIcon)).click();
-    await driver.findElement(By.xpath(locators.sortDescByPrice)).click();
+  it("TC_PRD_008 - Display the products that have been sorted by price in descending order (high to low)", async () => {
+    await driver
+      .findElement(By.xpath(locators.sortedDropdown.sortedIcon))
+      .click();
+    await driver
+      .findElement(By.xpath(locators.sortedDropdown.sortDescByPrice))
+      .click();
 
     const expectedProductsDescByPrice = [
-      data.fleeceJacketDetailName,
-      data.backpackDetailName,
-      data.boltTshirtDetailName,
-      data.tshirtDetailName,
-      data.bikeLightDetailName,
-      data.onesieDetailName,
+      data.products.fleeceJacketDetailName,
+      data.products.backpackDetailName,
+      data.products.boltTshirtDetailName,
+      data.products.tshirtDetailName,
+      data.products.bikeLightDetailName,
+      data.products.onesieDetailName,
     ];
 
     const getProductsDesc = await driver.findElements(
-      By.xpath(locators.detailProductsName)
+      By.xpath(locators.products.detailProductsName)
     );
 
     const actualProductsDescByPrice = [];
@@ -252,7 +272,7 @@ describe("Test the functionality of view product and product detail", async func
 
   after(async () => {
     if (driver) {
-      await driver.close();
+      await driver.quit();
     }
   });
 });
