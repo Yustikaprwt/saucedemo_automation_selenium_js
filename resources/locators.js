@@ -30,6 +30,7 @@ export const locators = {
   button: {
     backToProductsButton: '//*[@data-test="back-to-products"]',
     continueShoppingButton: "continue-shopping",
+    checkoutButton: "checkout",
   },
 
   title: {
