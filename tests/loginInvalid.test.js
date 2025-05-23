@@ -1,12 +1,10 @@
 const { By, until } = require("selenium-webdriver");
 const createDriver = require("../resources/driver.js");
 const assert = require("assert");
-const {
-  locators,
-  data,
-  errorMessage,
-  expectedUrl,
-} = require("../resources/locators.js");
+const { locators } = require("../resources/locators.js");
+const { data } = require("../resources/data.js");
+const { errorMessage } = require("../resources/errorMessage.js");
+const { expectedUrl } = require("../resources/expectedUrl.js");
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
 
@@ -16,43 +14,44 @@ describe("Login with invalid credentials", async function () {
 
   before(async () => {
     driver = await createDriver();
+    await driver.get(BASE_URL);
   });
 
-  it("LGN_002 - Login account as user with 'locked_out_user' username and valid password", async () => {
-    await driver.get(BASE_URL);
-
+  it("TC_LGN_002 - Login account as user with 'locked_out_user' username and valid password", async () => {
     await driver
-      .findElement(By.id(locators.username))
-      .sendKeys(data.lockedOutUser);
-    await driver.findElement(By.id(locators.password)).sendKeys(data.password);
-    await driver.findElement(By.id(locators.buttonLogin)).click();
+      .findElement(By.id(locators.login.username))
+      .sendKeys(data.login.lockedOutUser);
+    await driver
+      .findElement(By.id(locators.login.password))
+      .sendKeys(data.login.password);
+    await driver.findElement(By.id(locators.login.buttonLogin)).click();
 
     const getErrorElement = await driver.findElement(
-      By.xpath(locators.errorBoxAllert)
+      By.xpath(locators.message.errorBoxAllert)
     );
     const getErrorMessage = await getErrorElement.getText();
-    const expectedErrorMessage = await errorMessage.lockedOutUser;
+    const expectedErrorMessage = errorMessage.lockedOutUser;
 
     assert.equal(getErrorMessage, expectedErrorMessage);
   });
 
-  it("LGN_003 - Login account as user with 'problem_user' username and valid password", async () => {
-    await driver.get(BASE_URL);
-
+  it("TC_LGN_003 - Login account as user with 'problem_user' username and valid password", async () => {
     await driver
-      .findElement(By.id(locators.username))
-      .sendKeys(data.problemUser);
-    await driver.findElement(By.id(locators.password)).sendKeys(data.password);
-    await driver.findElement(By.id(locators.buttonLogin)).click();
+      .findElement(By.id(locators.login.username))
+      .sendKeys(data.login.problemUser);
+    await driver
+      .findElement(By.id(locators.login.password))
+      .sendKeys(data.login.password);
+    await driver.findElement(By.id(locators.login.buttonLogin)).click();
 
     const getUrl = await driver.getCurrentUrl();
-    const getExpectedUrl = await expectedUrl.dashboardUrl;
+    const getExpectedUrl = expectedUrl.inventoryUrl;
     assert.equal(getUrl, getExpectedUrl);
 
     const addBackpackButton = await driver.wait(
       until.elementIsVisible(
         await driver.wait(
-          until.elementLocated(By.id(locators.addBackpackButton))
+          until.elementLocated(By.id(locators.products.addBackpackButton))
         )
       ),
       30000
@@ -62,40 +61,40 @@ describe("Login with invalid credentials", async function () {
 
     await driver.wait(async () => {
       const removeButton = await driver.findElement(
-        By.id(locators.removeBackpackButton)
+        By.id(locators.products.removeBackpackButton)
       );
       const text = await removeButton.getText();
       return text === "Remove";
     }, 30000);
 
     const removeBackpackButton = await driver.findElement(
-      By.id(locators.removeBackpackButton)
+      By.id(locators.products.removeBackpackButton)
     );
     await removeBackpackButton.click();
 
     await driver.wait(async () => {
       const buttonText = await driver.findElement(
-        By.id(locators.removeBackpackButton)
+        By.id(locators.products.removeBackpackButton)
       );
       const text = await buttonText.getText();
       return text === "Remove";
     }, 30000);
   });
 
-  it("LGN_004 - Login account as user with 'performance_glitch_user' username and valid password", async () => {
-    await driver.get(BASE_URL);
-
+  it("TC_LGN_004 - Login account as user with 'performance_glitch_user' username and valid password", async () => {
     await driver
-      .findElement(By.id(locators.username))
-      .sendKeys(data.glitchUser);
-    await driver.findElement(By.id(locators.password)).sendKeys(data.password);
+      .findElement(By.id(locators.login.username))
+      .sendKeys(data.login.glitchUser);
+    await driver
+      .findElement(By.id(locators.login.password))
+      .sendKeys(data.login.password);
 
     const navigationStart = Date.now();
 
-    await driver.findElement(By.id(locators.buttonLogin)).click();
+    await driver.findElement(By.id(locators.login.buttonLogin)).click();
 
     const getUrl = await driver.getCurrentUrl();
-    const dashboardUrl = await expectedUrl.dashboardUrl;
+    const dashboardUrl = expectedUrl.inventoryUrl;
     assert.equal(getUrl, dashboardUrl);
 
     const navigationEnd = Date.now();
@@ -104,116 +103,114 @@ describe("Login with invalid credentials", async function () {
     assert.ok(loadPageDuration > 5000);
   });
 
-  it("LGN_005 - Login account as user with 'error_user' username and valid password", async () => {
-    await driver.get(BASE_URL);
-
-    await driver.findElement(By.id(locators.username)).sendKeys(data.errorUser);
-    await driver.findElement(By.id(locators.password)).sendKeys(data.password);
-    await driver.findElement(By.id(locators.buttonLogin)).click();
+  it("TC_LGN_005 - Login account as user with 'error_user' username and valid password", async () => {
+    await driver
+      .findElement(By.id(locators.login.username))
+      .sendKeys(data.login.errorUser);
+    await driver
+      .findElement(By.id(locators.login.password))
+      .sendKeys(data.login.password);
+    await driver.findElement(By.id(locators.login.buttonLogin)).click();
 
     const getUrl = await driver.getCurrentUrl();
-    const dashboardUrl = await expectedUrl.dashboardUrl;
+    const dashboardUrl = expectedUrl.inventoryUrl;
     assert.equal(getUrl, dashboardUrl);
 
     const addTshirtButton = await driver.findElement(
-      By.id(locators.addTshirtButton)
+      By.id(locators.products.addTshirtButton)
     );
 
     await addTshirtButton.click();
 
     const afterClickText = await addTshirtButton.getText();
-    const expectedAfterClickText = await data.addTocartTextButton;
+    const expectedAfterClickText = data.products.addTocartTextButton;
 
     assert.equal(afterClickText, expectedAfterClickText);
   });
 
-  it("LGN_006 - Login account as user with 'visual_user' username and valid password", async () => {
-    await driver.get(BASE_URL);
-
+  it("TC_LGN_006 - Login account as user with 'visual_user' username and valid password", async () => {
     await driver
-      .findElement(By.id(locators.username))
-      .sendKeys(data.visualUser);
-    await driver.findElement(By.id(locators.password)).sendKeys(data.password);
-    await driver.findElement(By.id(locators.buttonLogin)).click();
+      .findElement(By.id(locators.login.username))
+      .sendKeys(data.login.visualUser);
+    await driver
+      .findElement(By.id(locators.login.password))
+      .sendKeys(data.login.password);
+    await driver.findElement(By.id(locators.login.buttonLogin)).click();
 
     const getUrl = await driver.getCurrentUrl();
-    const dashboardUrl = await expectedUrl.dashboardUrl;
+    const dashboardUrl = expectedUrl.inventoryUrl;
     assert.equal(getUrl, dashboardUrl);
   });
 
-  it("LGN_007 - Login account as user with 'standard_user' username but with incorect password", async () => {
-    await driver.get(BASE_URL);
-
+  it("TC_LGN_007 - Login account as user with 'standard_user' username but with incorect password", async () => {
     await driver
-      .findElement(By.id(locators.username))
-      .sendKeys(data.standardUser);
+      .findElement(By.id(locators.login.username))
+      .sendKeys(data.login.standardUser);
     await driver
-      .findElement(By.id(locators.password))
-      .sendKeys(data.invalidPassword);
-    await driver.findElement(By.id(locators.buttonLogin)).click();
+      .findElement(By.id(locators.login.password))
+      .sendKeys(data.login.invalidPassword);
+    await driver.findElement(By.id(locators.login.buttonLogin)).click();
 
     const getErrorAlertBox = await driver.findElement(
-      By.xpath(locators.errorBoxAllert)
+      By.xpath(locators.message.errorBoxAllert)
     );
     const getErrorText = await getErrorAlertBox.getText();
 
-    const expectedErrorText = await errorMessage.invalidInput;
+    const expectedErrorText = errorMessage.invalidInput;
     assert.equal(getErrorText, expectedErrorText);
   });
 
-  it("LGN_008 - Login account as user using 'standard_user' username and empty password field", async () => {
-    await driver.get(BASE_URL);
-
+  it("TC_LGN_008 - Login account as user using 'standard_user' username and empty password field", async () => {
     await driver
-      .findElement(By.id(locators.username))
-      .sendKeys(data.standardUser);
-    await driver.findElement(By.id(locators.buttonLogin)).click();
+      .findElement(By.id(locators.login.username))
+      .sendKeys(data.login.standardUser);
+    await driver.findElement(By.id(locators.login.buttonLogin)).click();
 
     const getErrorAlertBox = await driver.findElement(
-      By.xpath(locators.errorBoxAllert)
+      By.xpath(locators.message.errorBoxAllert)
     );
     const getErrorText = await getErrorAlertBox.getText();
 
-    const expectedErrorText = await errorMessage.requiredPassword;
+    const expectedErrorText = errorMessage.requiredPassword;
     assert.equal(getErrorText, expectedErrorText);
   });
 
-  it("LGN_009 - Login account as user by input an invalid username", async () => {
-    await driver.get(BASE_URL);
-
+  it("TC_LGN_009 - Login account as user by input an invalid username", async () => {
     await driver
-      .findElement(By.id(locators.username))
-      .sendKeys(data.invalidUsername);
-    await driver.findElement(By.id(locators.password)).sendKeys(data.password);
-    await driver.findElement(By.id(locators.buttonLogin)).click();
+      .findElement(By.id(locators.login.username))
+      .sendKeys(data.login.invalidUsername);
+    await driver
+      .findElement(By.id(locators.login.password))
+      .sendKeys(data.login.password);
+    await driver.findElement(By.id(locators.login.buttonLogin)).click();
 
     const getErrorAlertBox = await driver.findElement(
-      By.xpath(locators.errorBoxAllert)
+      By.xpath(locators.message.errorBoxAllert)
     );
     const getErrorText = await getErrorAlertBox.getText();
 
-    const expectedErrorText = await errorMessage.invalidInput;
+    const expectedErrorText = errorMessage.invalidInput;
     assert.equal(getErrorText, expectedErrorText);
   });
 
-  it("LGN_010 - Login account as user with an empty username and valid password", async () => {
-    await driver.get(BASE_URL);
-
-    await driver.findElement(By.id(locators.password)).sendKeys(data.password);
-    await driver.findElement(By.id(locators.buttonLogin)).click();
+  it("TC_LGN_010 - Login account as user with an empty username and valid password", async () => {
+    await driver
+      .findElement(By.id(locators.login.password))
+      .sendKeys(data.login.password);
+    await driver.findElement(By.id(locators.login.buttonLogin)).click();
 
     const getErrorAlertBox = await driver.findElement(
-      By.xpath(locators.errorBoxAllert)
+      By.xpath(locators.message.errorBoxAllert)
     );
     const getErrorMessage = await getErrorAlertBox.getText();
 
-    const expectedErrorMessage = await errorMessage.requiredUsername;
+    const expectedErrorMessage = errorMessage.requiredUsername;
     assert.equal(getErrorMessage, expectedErrorMessage);
   });
 
   after(async () => {
     if (driver) {
-      await driver.close();
+      await driver.quit();
     }
   });
 });
