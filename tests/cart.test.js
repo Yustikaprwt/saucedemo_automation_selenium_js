@@ -1,31 +1,32 @@
-const { By } = require("selenium-webdriver");
+const { By, until } = require("selenium-webdriver");
 const assert = require("assert");
 const createDriver = require("../resources/driver.js");
-const { locators, data, expectedUrl } = require("../resources/locators.js");
+const { locators } = require("../resources/locators.js");
+const { data } = require("../resources/data.js");
+const { expectedUrl } = require("../resources/expectedUrl.js");
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
 
 describe("Test the functionality of cart", async function () {
-  this.timeout(30000);
+  this.timeout(60000);
 
   let driver;
 
-  before(async () => {
-    driver = await createDriver();
-
+  beforeEach(async () => {
     try {
+      driver = await createDriver();
       await driver.get(BASE_URL);
 
       await driver
-        .findElement(By.id(locators.username))
-        .sendKeys(data.standardUser);
+        .findElement(By.id(locators.login.username))
+        .sendKeys(data.login.standardUser);
       await driver
-        .findElement(By.id(locators.password))
-        .sendKeys(data.password);
-      await driver.findElement(By.id(locators.buttonLogin)).click();
+        .findElement(By.id(locators.login.password))
+        .sendKeys(data.login.password);
+      await driver.findElement(By.id(locators.login.buttonLogin)).click();
 
       const getUrl = await driver.getCurrentUrl();
-      const getExpectedUrl = await expectedUrl.dashboardUrl;
+      const getExpectedUrl = expectedUrl.inventoryUrl;
 
       assert.equal(getUrl, getExpectedUrl);
     } catch (err) {
@@ -33,87 +34,105 @@ describe("Test the functionality of cart", async function () {
     }
   });
 
-  it("CART_001 - Cart page is displayed when cart icon is clicked on Inventory page", async () => {
-    await driver.findElement(By.xpath(locators.cartIcon)).click();
+  it("TC_CART_001 - Cart page is displayed when cart icon is clicked on Inventory page", async () => {
+    await driver.findElement(By.xpath(locators.cart.cartIcon)).click();
 
     const getUrl = await driver.getCurrentUrl();
-    const url = await expectedUrl.cartPage;
-
+    const url = expectedUrl.cartPage;
     assert.equal(getUrl, url);
   });
 
-  it("CART_002 - User successfully added the product to the cart", async () => {
-    await driver.findElement(By.id(locators.addTshirtButton)).click();
-    await driver.findElement(By.xpath(locators.cartIcon)).click();
+  it("TC_CART_002 - User successfully added the product to the cart", async () => {
+    await driver.findElement(By.id(locators.products.addTshirtButton)).click();
+    await driver.findElement(By.xpath(locators.cart.cartIcon)).click();
 
     const getUrl = await driver.getCurrentUrl();
-    const url = await expectedUrl.cartPage;
+    const url = expectedUrl.cartPage;
     assert.equal(getUrl, url);
 
-    const getBadgeIcon = await driver.findElement(By.xpath(locators.cartBadge));
+    const getBadgeIcon = await driver.findElement(
+      By.xpath(locators.cart.cartBadge)
+    );
     const quantityOfCart = await getBadgeIcon.getText();
     const expectedQuantity = "1";
     assert.equal(quantityOfCart, expectedQuantity);
 
-    const getItem = await driver.findElement(By.className(locators.cartItem));
+    const getItem = await driver.findElement(
+      By.className(locators.cart.cartItem)
+    );
     const getItemName = await getItem.getText();
 
-    const expectedItemName = data.boltTshirtDetailName;
+    const expectedItemName = data.products.boltTshirtDetailName;
     assert.ok(getItemName.includes(expectedItemName));
   });
 
-  it("CART_003 - User successfully added multiple product to the cart", async () => {
-    await driver.findElement(By.id(locators.addBackpackButton)).click();
-    await driver.findElement(By.id(locators.addTshirtButton)).click();
+  it("TC_CART_003 - User successfully added multiple product to the cart", async () => {
+    await driver
+      .findElement(By.id(locators.products.addBackpackButton))
+      .click();
 
-    await driver.findElement(By.xpath(locators.cartIcon)).click();
+    await driver.findElement(By.id(locators.products.addTshirtButton)).click();
+
+    await driver.findElement(By.xpath(locators.cart.cartIcon)).click();
 
     const getUrl = await driver.getCurrentUrl();
     const url = expectedUrl.cartPage;
     assert.ok(getUrl, url);
 
-    const getBadgeIcon = await driver.findElement(By.xpath(locators.cartBadge));
+    const getBadgeIcon = await driver.findElement(
+      By.xpath(locators.cart.cartBadge)
+    );
     const getQuantityOfCart = await getBadgeIcon.getText();
     const expectedQuantity = "2";
     assert.equal(getQuantityOfCart, expectedQuantity);
 
     const getItemList = await driver.findElement(
-      By.className(locators.cartItemList)
+      By.className(locators.cart.cartItemList)
     );
     const getItemName = await getItemList.getText();
-    const backpackItem = data.backpackDetailName;
-    const tshirtItem = data.tshirtDetailName;
+    const backpackItem = data.products.backpackDetailName;
+    const tshirtItem = data.products.tshirtDetailName;
     assert.ok(getItemName.includes(backpackItem, tshirtItem));
   });
 
-  it("CART_004 - User successfully added all products from the Inventory page to the cart", async () => {
-    await driver.findElement(By.id(locators.addBackpackButton)).click();
-    await driver.findElement(By.id(locators.addBikeLightButton)).click();
-    await driver.findElement(By.id(locators.addTshirtButton)).click();
-    await driver.findElement(By.id(locators.addFleeceJacketButton)).click();
-    await driver.findElement(By.id(locators.addOnesieButton)).click();
-    await driver.findElement(By.id(locators.addRedTshirtButton)).click();
+  it("TC_CART_004 - User successfully added all products from the Inventory page to the cart", async () => {
+    await driver
+      .findElement(By.id(locators.products.addBackpackButton))
+      .click();
+    await driver
+      .findElement(By.id(locators.products.addBikeLightButton))
+      .click();
+    await driver.findElement(By.id(locators.products.addTshirtButton)).click();
+    await driver
+      .findElement(By.id(locators.products.addFleeceJacketButton))
+      .click();
+    await driver.findElement(By.id(locators.products.addOnesieButton)).click();
+    await driver
+      .findElement(By.id(locators.products.addRedTshirtButton))
+      .click();
 
-    await driver.findElement(By.xpath(locators.cartIcon)).click();
+    await driver.findElement(By.xpath(locators.cart.cartIcon)).click();
     const getUrl = await driver.getCurrentUrl();
     const url = expectedUrl.cartPage;
     assert.equal(getUrl, url);
 
-    const getBadgeIcon = await driver.findElement(By.xpath(locators.cartBadge));
+    const getBadgeIcon = await driver.findElement(
+      By.xpath(locators.cart.cartBadge)
+    );
     const getQuantityOfCart = await getBadgeIcon.getText();
     const expectedQuantity = "6";
     assert.equal(getQuantityOfCart, expectedQuantity);
 
     const getCartItems = await driver.findElements(
-      By.xpath(locators.detailProductsName)
+      By.xpath(locators.products.detailProductsName)
     );
     const expectedCartItems = [
-      data.backpackDetailName,
-      data.bikeLightDetailName,
-      data.boltTshirtDetailName,
-      data.fleeceJacketDetailName,
-      data.onesieDetailName,
-      data.tshirtDetailName,
+      data.products.backpackDetailName,
+      data.products.bikeLightDetailName,
+      data.products.boltTshirtDetailName,
+      data.products.fleeceJacketDetailName,
+      data.products.onesieDetailName,
+      data.products.tshirtDetailName,
     ];
 
     const actualCartItems = [];
@@ -121,51 +140,60 @@ describe("Test the functionality of cart", async function () {
       const itemName = await items.getText();
       actualCartItems.push(itemName);
     }
-
     assert.deepStrictEqual(actualCartItems, expectedCartItems);
   });
 
-  it("CART_005 - User successfully removed a product from the Cart page", async () => {
-    await driver.findElement(By.id(locators.addBackpackButton)).click();
+  it("TC_CART_005 - User successfully removed a product from the Cart page", async () => {
+    await driver
+      .findElement(By.id(locators.products.addBackpackButton))
+      .click();
 
-    await driver.findElement(By.xpath(locators.cartIcon)).click();
+    await driver.findElement(By.xpath(locators.cart.cartIcon)).click();
     const getUrl = await driver.getCurrentUrl();
     const url = expectedUrl.cartPage;
     assert.equal(getUrl, url);
 
-    const getBadgeIcon = await driver.findElement(By.xpath(locators.cartBadge));
+    const getBadgeIcon = await driver.findElement(
+      By.xpath(locators.cart.cartBadge)
+    );
     const getQuantityOfCart = await getBadgeIcon.getText();
     const expectedQuantity = "1";
     assert.equal(getQuantityOfCart, expectedQuantity);
 
-    await driver.findElement(By.id(locators.removeBackpackButton)).click();
+    await driver
+      .findElement(By.id(locators.products.removeBackpackButton))
+      .click();
 
     await driver.wait(async () => {
       const badgeElements = await driver.findElements(
-        By.xpath(locators.cartBadge)
+        By.xpath(locators.cart.cartBadge)
       );
       return badgeElements.length === 0;
     }, 10000);
   });
 
-  it("CART_006 - Display a 'Continue Shopping' button to return to the Inventory page", async () => {
-    await driver.findElement(By.id(locators.addBackpackButton)).click();
+  it("TC_CART_006 - Display a 'Continue Shopping' button to return to the Inventory page", async () => {
+    await driver
+      .findElement(By.id(locators.products.addBackpackButton))
+      .click();
 
-    await driver.findElement(By.xpath(locators.cartIcon)).click();
+    await driver.findElement(By.xpath(locators.cart.cartIcon)).click();
     const getUrl = await driver.getCurrentUrl();
     const url = expectedUrl.cartPage;
     assert.equal(getUrl, url);
 
-    await driver.findElement(By.id(locators.continueShoppingButton)).click();
+    await driver
+      .findElement(By.id(locators.button.continueShoppingButton))
+      .click();
 
     const getCurrentUrl = await driver.getCurrentUrl();
-    const getExpectedUrl = expectedUrl.dashboardUrl;
+    const getExpectedUrl = expectedUrl.inventoryUrl;
     assert.equal(getCurrentUrl, getExpectedUrl);
   });
 
-  after(async () => {
+  afterEach(async () => {
     if (driver) {
-      await driver.close();
+      await driver.quit();
     }
   });
 });
