@@ -14,7 +14,9 @@ describe("Test the functionality of view product and product detail", async func
 
   before(async () => {
     driver = await createDriver();
+  });
 
+  beforeEach(async () => {
     try {
       await driver.get(BASE_URL);
 
