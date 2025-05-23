@@ -14,7 +14,14 @@ describe("Login with invalid credentials", async function () {
 
   before(async () => {
     driver = await createDriver();
-    await driver.get(BASE_URL);
+  });
+
+  beforeEach(async () => {
+    try {
+      await driver.get(BASE_URL);
+    } catch (err) {
+      throw err;
+    }
   });
 
   it("TC_LGN_002 - Login account as user with 'locked_out_user' username and valid password", async () => {
