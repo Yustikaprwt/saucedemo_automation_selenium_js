@@ -273,6 +273,55 @@ describe("Test the functionality of the checkout feature with at least one produ
     assert.strictEqual(sum, expectedItemTotal);
   });
 
+  it("TC_CHECKOUT_010 - Correctly calculate the total payment with tax for product purchased on the Payment page.", async () => {
+    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+
+    const checkoutUrl = await driver.getCurrentUrl();
+    const expectedCheckoutUrl = expectedUrl.checkoutUrl;
+    assert.strictEqual(checkoutUrl, expectedCheckoutUrl);
+
+    await driver
+      .findElement(By.id(locators.inputField.firstNameField))
+      .sendKeys(data.checkoutData.firstName);
+    await driver
+      .findElement(By.id(locators.inputField.lastNameField))
+      .sendKeys(data.checkoutData.lastName);
+    await driver
+      .findElement(By.id(locators.inputField.zipCodeField))
+      .sendKeys(data.checkoutData.zipCode);
+    await driver.findElement(By.id(locators.button.continueCheckout)).click();
+
+    const paymentUrl = await driver.getCurrentUrl();
+    const expectedPaymentUrl = expectedUrl.paymentUrl;
+    assert.strictEqual(paymentUrl, expectedPaymentUrl);
+
+    const getProductsPrice = await driver.findElements(
+      By.xpath(locators.products.detailPrice)
+    );
+
+    const listProductsPrice = [];
+    for (const price of getProductsPrice) {
+      const productPrice = await price.getText();
+      const convertPrice = parseFloat(productPrice.replace(/[^0-9.]/g, ""));
+      listProductsPrice.push(convertPrice);
+    }
+
+    const getTax = await driver.findElement(
+      By.xpath(locators.products.taxLabel)
+    );
+    const taxLabel = await getTax.getText();
+    const convertTax = parseFloat(taxLabel.replace(/[^0-9.]/g, ""));
+
+    let sum = 0;
+    listProductsPrice.forEach((price) => {
+      sum += price;
+    });
+
+    const totalPayment = parseFloat((sum + convertTax).toFixed(2));
+    const expectedTotalPayment = 41.02;
+    assert.strictEqual(totalPayment, expectedTotalPayment);
+  });
+
   afterEach(async () => {
     if (driver) {
       await driver.close();
