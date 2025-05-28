@@ -142,6 +142,29 @@ describe("Test the functionality of the checkout feature with at least one produ
     assert.strictEqual(getErrorMessage, message);
   });
 
+  it("TC_CHECKOUT_005 - Attempt to checkout the product with empty fields for last name.", async () => {
+    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+
+    const getUrl = await driver.getCurrentUrl();
+    const checkoutUrl = expectedUrl.checkoutUrl;
+    assert.strictEqual(getUrl, checkoutUrl);
+
+    await driver
+      .findElement(By.id(locators.inputField.firstNameField))
+      .sendKeys(data.checkoutData.firstName);
+    await driver
+      .findElement(By.id(locators.inputField.zipCodeField))
+      .sendKeys(data.checkoutData.zipCode);
+    await driver.findElement(By.id(locators.button.continueCheckout)).click();
+
+    const getErrorElement = await driver.findElement(
+      By.xpath(locators.message.errorBoxAllert)
+    );
+    const getErrorMessage = await getErrorElement.getText();
+    const message = errorMessage.requiredLastName;
+    assert.strictEqual(getErrorMessage, message);
+  });
+
   afterEach(async () => {
     if (driver) {
       await driver.close();
