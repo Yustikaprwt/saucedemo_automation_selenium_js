@@ -5,4 +5,5 @@ export const errorMessage = {
   requiredPassword: "Epic sadface: Password is required",
   requiredUsername: "Epic sadface: Username is required",
   requiredFirstName: "Error: First Name is required",
+  requiredLastName: "Error: Last Name is required",
 };
