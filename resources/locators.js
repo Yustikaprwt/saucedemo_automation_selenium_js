@@ -34,6 +34,7 @@ export const locators = {
     checkoutButton: "checkout",
     continueCheckout: "continue",
     cancelCheckout: "cancel",
+    finishPaymentButton: "finish",
   },
 
   title: {
@@ -42,6 +43,7 @@ export const locators = {
 
   message: {
     errorBoxAllert: '//*[@data-test="error"]',
+    completeOrder: '//*[@data-test="complete-header"]',
   },
 
   sortedDropdown: {
