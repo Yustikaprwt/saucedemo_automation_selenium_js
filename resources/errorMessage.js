@@ -6,4 +6,5 @@ export const errorMessage = {
   requiredUsername: "Epic sadface: Username is required",
   requiredFirstName: "Error: First Name is required",
   requiredLastName: "Error: Last Name is required",
+  requiredPostalCode: "Error: Postal Code is required",
 };
