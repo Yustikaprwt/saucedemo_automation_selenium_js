@@ -94,6 +94,30 @@ describe("Test the functionality of the checkout feature with at least one produ
     assert.equal(getUrl, url);
   });
 
+  it("TC_CHECKOUT_003 - Successfully completed the product checkout.", async () => {
+    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+
+    const getUrl = await driver.getCurrentUrl();
+    const url = expectedUrl.checkoutUrl;
+    assert.equal(getUrl, url);
+
+    await driver
+      .findElement(By.id(locators.inputField.firstNameField))
+      .sendKeys(data.checkoutData.firstName);
+    await driver
+      .findElement(By.id(locators.inputField.lastNameField))
+      .sendKeys(data.checkoutData.lastName);
+    await driver
+      .findElement(By.id(locators.inputField.zipCodeField))
+      .sendKeys(data.checkoutData.zipCode);
+
+    await driver.findElement(By.id(locators.button.continueCheckout)).click();
+
+    const getPaymentUrl = await driver.getCurrentUrl();
+    const paymentUrl = expectedUrl.paymentUrl;
+    assert.equal(getPaymentUrl, paymentUrl);
+  });
+
   afterEach(async () => {
     if (driver) {
       await driver.close();
