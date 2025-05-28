@@ -165,6 +165,28 @@ describe("Test the functionality of the checkout feature with at least one produ
     assert.strictEqual(getErrorMessage, message);
   });
 
+  it("TC_CHECKOUT_006 - Attempt to checkout the product with empty fields for zip/postal code.", async () => {
+    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+    const getUrl = await driver.getCurrentUrl();
+    const checkoutUrl = expectedUrl.checkoutUrl;
+    assert.strictEqual(getUrl, checkoutUrl);
+
+    await driver
+      .findElement(By.id(locators.inputField.firstNameField))
+      .sendKeys(data.checkoutData.firstName);
+    await driver
+      .findElement(By.id(locators.inputField.lastNameField))
+      .sendKeys(data.checkoutData.lastName);
+    await driver.findElement(By.id(locators.button.continueCheckout)).click();
+
+    const getErrorElement = await driver.findElement(
+      By.xpath(locators.message.errorBoxAllert)
+    );
+    const getErrorMessage = await getErrorElement.getText();
+    const message = errorMessage.requiredPostalCode;
+    assert.strictEqual(getErrorMessage, message);
+  });
+
   afterEach(async () => {
     if (driver) {
       await driver.close();
