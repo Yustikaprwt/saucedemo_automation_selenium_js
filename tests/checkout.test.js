@@ -80,6 +80,7 @@ describe("Test the functionality of the checkout feature with at least one produ
     await driver
       .findElement(By.id(locators.products.addBackpackButton))
       .click();
+    await driver.findElement(By.id(locators.products.addOnesieButton)).click();
 
     await driver.findElement(By.xpath(locators.cart.cartIcon)).click();
     const getCartUrl = await driver.getCurrentUrl();
@@ -228,6 +229,48 @@ describe("Test the functionality of the checkout feature with at least one produ
     const inventoryUrl = await driver.getCurrentUrl();
     const expectedInventoryUrl = expectedUrl.inventoryUrl;
     assert.strictEqual(inventoryUrl, expectedInventoryUrl);
+  });
+
+  it("TC_CHECKOUT_009 - Correctly calculate the item total for product purchased on the Payment page.", async () => {
+    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+
+    const checkoutUrl = await driver.getCurrentUrl();
+    const expectedCheckoutUrl = expectedUrl.checkoutUrl;
+    assert.strictEqual(checkoutUrl, expectedCheckoutUrl);
+
+    await driver
+      .findElement(By.id(locators.inputField.firstNameField))
+      .sendKeys(data.checkoutData.firstName);
+    await driver
+      .findElement(By.id(locators.inputField.lastNameField))
+      .sendKeys(data.checkoutData.lastName);
+    await driver
+      .findElement(By.id(locators.inputField.zipCodeField))
+      .sendKeys(data.checkoutData.zipCode);
+    await driver.findElement(By.id(locators.button.continueCheckout)).click();
+
+    const paymentUrl = await driver.getCurrentUrl();
+    const expectedPaymentUrl = expectedUrl.paymentUrl;
+    assert.strictEqual(paymentUrl, expectedPaymentUrl);
+
+    const getProductsPrice = await driver.findElements(
+      By.xpath(locators.products.detailPrice)
+    );
+
+    const listProductsPrice = [];
+    for (const price of getProductsPrice) {
+      const productPrice = await price.getText();
+      const convertPrice = parseFloat(productPrice.replace(/[^0-9.]/g, ""));
+      listProductsPrice.push(convertPrice);
+    }
+
+    let sum = 0;
+    listProductsPrice.forEach((price) => {
+      sum += price;
+    });
+
+    const expectedItemTotal = 37.98;
+    assert.strictEqual(sum, expectedItemTotal);
   });
 
   afterEach(async () => {
