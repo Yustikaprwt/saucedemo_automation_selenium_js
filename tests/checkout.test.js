@@ -201,6 +201,35 @@ describe("Test the functionality of the checkout feature with at least one produ
     assert.strictEqual(getActiveUrl, cartUrl);
   });
 
+  it("TC_CHECKOUT_008 - Redirect to the Inventory page if the users cancels the checkout on the Payment page.", async () => {
+    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+
+    const checkoutPageUrl = await driver.getCurrentUrl();
+    const expectedCheckoutUrl = expectedUrl.checkoutUrl;
+    assert.strictEqual(checkoutPageUrl, expectedCheckoutUrl);
+
+    await driver
+      .findElement(By.id(locators.inputField.firstNameField))
+      .sendKeys(data.checkoutData.firstName);
+    await driver
+      .findElement(By.id(locators.inputField.lastNameField))
+      .sendKeys(data.checkoutData.lastName);
+    await driver
+      .findElement(By.id(locators.inputField.zipCodeField))
+      .sendKeys(data.checkoutData.zipCode);
+    await driver.findElement(By.id(locators.button.continueCheckout)).click();
+
+    const paymentUrl = await driver.getCurrentUrl();
+    const expectedPaymentUrl = expectedUrl.paymentUrl;
+    assert.strictEqual(paymentUrl, expectedPaymentUrl);
+
+    await driver.findElement(By.id(locators.button.cancelCheckout)).click();
+
+    const inventoryUrl = await driver.getCurrentUrl();
+    const expectedInventoryUrl = expectedUrl.inventoryUrl;
+    assert.strictEqual(inventoryUrl, expectedInventoryUrl);
+  });
+
   afterEach(async () => {
     if (driver) {
       await driver.close();
