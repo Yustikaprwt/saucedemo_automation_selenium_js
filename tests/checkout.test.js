@@ -4,6 +4,7 @@ const createDriver = require("../resources/driver.js");
 const { locators } = require("../resources/locators.js");
 const { data } = require("../resources/data.js");
 const { expectedUrl } = require("../resources/expectedUrl.js");
+const { errorMessage } = require("../resources/errorMessage.js");
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
 
@@ -116,6 +117,29 @@ describe("Test the functionality of the checkout feature with at least one produ
     const getPaymentUrl = await driver.getCurrentUrl();
     const paymentUrl = expectedUrl.paymentUrl;
     assert.equal(getPaymentUrl, paymentUrl);
+  });
+
+  it("TC_CHECKOUT_004 - Attempt to checkout the product with empty fields for first name.", async () => {
+    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+
+    const getUrl = await driver.getCurrentUrl();
+    const checkoutUrl = expectedUrl.checkoutUrl;
+    assert.equal(getUrl, checkoutUrl);
+
+    await driver
+      .findElement(By.id(locators.inputField.lastNameField))
+      .sendKeys(data.checkoutData.lastName);
+    await driver
+      .findElement(By.id(locators.inputField.zipCodeField))
+      .sendKeys(data.checkoutData.zipCode);
+    await driver.findElement(By.id(locators.button.continueCheckout)).click();
+
+    const getErrorElement = await driver.findElement(
+      By.xpath(locators.message.errorBoxAllert)
+    );
+    const getErrorMessage = await getErrorElement.getText();
+    const message = errorMessage.requiredFirstName;
+    assert.strictEqual(getErrorMessage, message);
   });
 
   afterEach(async () => {
