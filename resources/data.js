@@ -37,4 +37,10 @@ export const data = {
   title: {
     inventoryTitle: "Products",
   },
+
+  checkoutData: {
+    firstName: "test",
+    lastName: "user",
+    zipCode: "1111",
+  },
 };
