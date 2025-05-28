@@ -32,6 +32,7 @@ export const locators = {
     continueShoppingButton: "continue-shopping",
     checkoutButton: "checkout",
     continueCheckout: "continue",
+    cancelCheckout: "cancel",
   },
 
   title: {
