@@ -187,6 +187,20 @@ describe("Test the functionality of the checkout feature with at least one produ
     assert.strictEqual(getErrorMessage, message);
   });
 
+  it("TC_CHECKOUT_007 - Redirect to the Cart page if the user cancels the checkout on the Checkout page.", async () => {
+    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+
+    const getUrl = await driver.getCurrentUrl();
+    const checkoutUrl = expectedUrl.checkoutUrl;
+    assert.strictEqual(getUrl, checkoutUrl);
+
+    await driver.findElement(By.id(locators.button.cancelCheckout)).click();
+
+    const getActiveUrl = await driver.getCurrentUrl();
+    const cartUrl = expectedUrl.cartPage;
+    assert.strictEqual(getActiveUrl, cartUrl);
+  });
+
   afterEach(async () => {
     if (driver) {
       await driver.close();
