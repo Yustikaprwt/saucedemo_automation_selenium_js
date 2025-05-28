@@ -18,6 +18,7 @@ export const locators = {
     detailDesc: '//*[@data-test="inventory-item-desc"]',
     detailProductsImg: "inventory_item_img",
     onesieImage: '//*[@data-test="item-2-img-link"]',
+    taxLabel: '//*[@data-test="tax-label"]',
   },
 
   cart: {
