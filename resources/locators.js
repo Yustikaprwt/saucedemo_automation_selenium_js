@@ -31,6 +31,7 @@ export const locators = {
     backToProductsButton: '//*[@data-test="back-to-products"]',
     continueShoppingButton: "continue-shopping",
     checkoutButton: "checkout",
+    continueCheckout: "continue",
   },
 
   title: {
@@ -47,5 +48,11 @@ export const locators = {
     sortDescByName: '//*[@value="za"]',
     sortAscByPrice: '//*[@value="lohi"]',
     sortDescByPrice: '//*[@value="hilo"]',
+  },
+
+  inputField: {
+    firstNameField: "first-name",
+    lastNameField: "last-name",
+    zipCodeField: "postal-code",
   },
 };
