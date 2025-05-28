@@ -322,6 +322,40 @@ describe("Test the functionality of the checkout feature with at least one produ
     assert.strictEqual(totalPayment, expectedTotalPayment);
   });
 
+  it("TC_CHECKOUT_011 - Display a success message after the user successfully completes the checkout and payment process.", async () => {
+    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+
+    const checkoutUrl = await driver.getCurrentUrl();
+    const expectedCheckoutUrl = expectedUrl.checkoutUrl;
+    assert.strictEqual(checkoutUrl, expectedCheckoutUrl);
+
+    await driver
+      .findElement(By.id(locators.inputField.firstNameField))
+      .sendKeys(data.checkoutData.firstName);
+    await driver
+      .findElement(By.id(locators.inputField.lastNameField))
+      .sendKeys(data.checkoutData.lastName);
+    await driver
+      .findElement(By.id(locators.inputField.zipCodeField))
+      .sendKeys(data.checkoutData.zipCode);
+    await driver.findElement(By.id(locators.button.continueCheckout)).click();
+
+    const paymentUrl = await driver.getCurrentUrl();
+    const expectedPaymentUrl = expectedUrl.paymentUrl;
+    assert.strictEqual(paymentUrl, expectedPaymentUrl);
+
+    await driver
+      .findElement(By.id(locators.button.finishPaymentButton))
+      .click();
+
+    const getCompleteOrderElement = await driver.findElement(
+      By.xpath(locators.message.completeOrder)
+    );
+    const getCompleteOrderText = await getCompleteOrderElement.getText();
+    const completeOrderText = "Thank you for your order!";
+    assert.strictEqual(getCompleteOrderText, completeOrderText);
+  });
+
   afterEach(async () => {
     if (driver) {
       await driver.close();
