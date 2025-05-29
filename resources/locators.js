@@ -35,6 +35,7 @@ export const locators = {
     continueCheckout: "continue",
     cancelCheckout: "cancel",
     finishPaymentButton: "finish",
+    burgerMenuButton: "react-burger-menu-btn",
   },
 
   title: {
@@ -58,5 +59,9 @@ export const locators = {
     firstNameField: "first-name",
     lastNameField: "last-name",
     zipCodeField: "postal-code",
+  },
+
+  optionLink: {
+    logoutLink: "logout_sidebar_link",
   },
 };
