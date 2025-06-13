@@ -3,6 +3,7 @@ const chrome = require("selenium-webdriver/chrome");
 
 const options = new chrome.Options();
 
+options.addArguments("--headless");
 options.addArguments("--disable-save-password-bubble");
 options.addArguments("--incognito");
 
