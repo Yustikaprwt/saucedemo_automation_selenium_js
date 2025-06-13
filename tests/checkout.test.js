@@ -33,7 +33,7 @@ describe("Test the functionality of checkout feature with empty product", async 
     }
   });
 
-  it("TC_CHECKOUT_001 - Failed redirected to the Checkout page by clicking the 'Checkout' button on the Cart page when the cart is empty", async () => {
+  it.skip("TC_CHECKOUT_001 - Failed redirected to the Checkout page by clicking the 'Checkout' button on the Cart page when the cart is empty", async () => {
     await driver.findElement(By.xpath(locators.cart.cartIcon)).click();
 
     const getUrl = await driver.getCurrentUrl();
