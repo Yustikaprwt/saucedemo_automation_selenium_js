@@ -13,23 +13,23 @@ export const locators = {
     addOnesieButton: "add-to-cart-sauce-labs-onesie",
     addRedTshirtButton: "add-to-cart-test.allthethings()-t-shirt-(red)",
     removeBackpackButton: "remove-sauce-labs-backpack",
-    detailProductsName: '//*[@data-test="inventory-item-name"]',
-    detailPrice: '//*[@data-test="inventory-item-price"]',
-    detailDesc: '//*[@data-test="inventory-item-desc"]',
+    detailProductsName: '[data-test="inventory-item-name"]',
+    detailPrice: '[data-test="inventory-item-price"]',
+    detailDesc: '[data-test="inventory-item-desc"]',
     detailProductsImg: "inventory_item_img",
-    onesieImage: '//*[@data-test="item-2-img-link"]',
-    taxLabel: '//*[@data-test="tax-label"]',
+    onesieImage: '[data-test="item-2-img-link"]',
+    taxLabel: '[data-test="tax-label"]',
   },
 
   cart: {
-    cartIcon: '//*[@data-test="shopping-cart-link"]',
+    cartIcon: '[data-test="shopping-cart-link"]',
     cartItem: "cart_item_label",
     cartItemList: "cart_list",
-    cartBadge: '//*[@data-test="shopping-cart-badge"]',
+    cartBadge: '[data-test="shopping-cart-badge"]',
   },
 
   button: {
-    backToProductsButton: '//*[@data-test="back-to-products"]',
+    backToProductsButton: '[data-test="back-to-products"]',
     continueShoppingButton: "continue-shopping",
     checkoutButton: "checkout",
     continueCheckout: "continue",
@@ -43,16 +43,16 @@ export const locators = {
   },
 
   message: {
-    errorBoxAllert: '//*[@data-test="error"]',
-    completeOrder: '//*[@data-test="complete-header"]',
+    errorBoxAllert: '[data-test="error"]',
+    completeOrder: '[data-test="complete-header"]',
   },
 
   sortedDropdown: {
-    sortedIcon: '//*[@data-test="product-sort-container"]',
-    sortAscByName: '//*[@value="az"]',
-    sortDescByName: '//*[@value="za"]',
-    sortAscByPrice: '//*[@value="lohi"]',
-    sortDescByPrice: '//*[@value="hilo"]',
+    sortedIcon: '[data-test="product-sort-container"]',
+    sortAscByName: '[value="az"]',
+    sortDescByName: '[value="za"]',
+    sortAscByPrice: '[value="lohi"]',
+    sortDescByPrice: '[value="hilo"]',
   },
 
   inputField: {
