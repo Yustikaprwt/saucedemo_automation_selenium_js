@@ -10,6 +10,7 @@ class CartPage {
     this.cartListProduct = By.className(locators.cart.cartItemList);
     this.removeBackpackButton = By.id(locators.products.removeBackpackButton);
     this.continueShoppingButton = By.id(locators.button.continueShoppingButton);
+    this.checkoutButton = By.id(locators.button.checkoutButton);
   }
 
   async getCartTitle(timeout = 5000) {
@@ -95,6 +96,16 @@ class CartPage {
   async clickContinueShoppingButton(timeout = 5000) {
     const button = await this.driver.wait(
       until.elementLocated(this.continueShoppingButton),
+      timeout
+    );
+
+    await this.driver.wait(until.elementIsVisible(button), timeout);
+    await button.click();
+  }
+
+  async clickCheckoutButton(timeout = 5000) {
+    const button = await this.driver.wait(
+      until.elementLocated(this.checkoutButton),
       timeout
     );
 
