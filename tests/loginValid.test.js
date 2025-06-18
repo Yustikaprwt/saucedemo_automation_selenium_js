@@ -2,8 +2,8 @@ const { expect } = require("chai");
 const createDriver = require("../resources/driver.js");
 const { data } = require("../resources/data.js");
 const { expectedUrl } = require("../resources/expectedUrl.js");
-const LoginPage = require("../page/loginPage.js");
-const InventoryPage = require("../page/inventoryPage.js");
+const LoginPage = require("../page/LoginPage.js");
+const InventoryPage = require("../page/InventoryPage.js");
 
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;

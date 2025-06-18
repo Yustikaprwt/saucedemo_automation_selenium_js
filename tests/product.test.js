@@ -1,8 +1,8 @@
 const createDriver = require("../resources/driver.js");
 const { data } = require("../resources/data.js");
 const { expectedUrl } = require("../resources/expectedUrl.js");
-const InventoryPage = require("../page/inventoryPage.js");
-const LoginPage = require("../page/loginPage.js");
+const InventoryPage = require("../page/InventoryPage.js");
+const LoginPage = require("../page/LoginPage.js");
 const { expect } = require("chai");
 
 require("dotenv").config();
