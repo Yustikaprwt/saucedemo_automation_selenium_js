@@ -38,7 +38,7 @@ export const locators = {
   },
 
   title: {
-    inventoryTitle: '[data-test="title"]',
+    headerTitle: '[data-test="title"]',
   },
 
   message: {
