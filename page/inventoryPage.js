@@ -4,10 +4,14 @@ const { locators } = require("../resources/locators");
 class InventoryPage {
   constructor(driver) {
     this.driver = driver;
-    this.inventoryHeader = By.css(locators.title.inventoryTitle);
+    this.inventoryHeader = By.css(locators.title.headerTitle);
     this.addBackpackButton = By.id(locators.products.addBackpackButton);
-    this.removeProductButton = By.id(locators.products.removeBackpackButton);
     this.addTshirtButton = By.id(locators.products.addTshirtButton);
+    this.addBikeLightButton = By.id(locators.products.addBikeLightButton);
+    this.addJacketButton = By.id(locators.products.addFleeceJacketButton);
+    this.addOnesieButton = By.id(locators.products.addOnesieButton);
+    this.addRedTshirtButton = By.id(locators.products.addRedTshirtButton);
+    this.removeProductButton = By.id(locators.products.removeBackpackButton);
     this.productsName = By.css(locators.products.detailProductsName);
     this.productsPrice = By.css(locators.products.detailPrice);
     this.productImg = By.className(locators.products.detailProductsImg);
@@ -18,6 +22,7 @@ class InventoryPage {
     this.sortedNameDesc = By.css(locators.sortedDropdown.sortDescByName);
     this.sortedPriceAsc = By.css(locators.sortedDropdown.sortAscByPrice);
     this.sortedPriceDesc = By.css(locators.sortedDropdown.sortDescByPrice);
+    this.cartIcon = By.css(locators.cart.cartIcon);
   }
 
   async getInventoryTitle(timeout = 5000) {
@@ -30,7 +35,7 @@ class InventoryPage {
     return await headerText.getText();
   }
 
-  async clickTshirtButton(timeout = 5000) {
+  async clickAddTshirtButton(timeout = 5000) {
     const addProductButton = await this.driver.wait(
       until.elementLocated(this.addTshirtButton),
       timeout
@@ -38,6 +43,65 @@ class InventoryPage {
 
     await this.driver.wait(until.elementIsVisible(addProductButton), timeout);
     await addProductButton.click();
+  }
+
+  async clickAddBackpackButton(timeout = 5000) {
+    const button = await this.driver.wait(
+      until.elementLocated(this.addBackpackButton),
+      timeout
+    );
+
+    await this.driver.wait(until.elementIsVisible(button), timeout);
+    await button.click();
+  }
+
+  async clickAddBikeLightButton(timeout = 5000) {
+    const button = await this.driver.wait(
+      until.elementLocated(this.addBikeLightButton),
+      timeout
+    );
+
+    await this.driver.wait(until.elementIsVisible(button), timeout);
+    await button.click();
+  }
+
+  async clickAddJacketButton(timeout = 5000) {
+    const button = await this.driver.wait(
+      until.elementLocated(this.addJacketButton),
+      timeout
+    );
+
+    await this.driver.wait(until.elementIsVisible(button), timeout);
+    await button.click();
+  }
+
+  async clickAddOnesieButton(timeout = 5000) {
+    const button = await this.driver.wait(
+      until.elementLocated(this.addOnesieButton),
+      timeout
+    );
+
+    await this.driver.wait(until.elementIsVisible(button), timeout);
+    await button.click();
+  }
+
+  async clickAddRedTshirtButton(timeout = 5000) {
+    const button = await this.driver.wait(
+      until.elementLocated(this.addRedTshirtButton),
+      timeout
+    );
+
+    await this.driver.wait(until.elementIsVisible(button), timeout);
+    await button.click();
+  }
+
+  async addAllProductToCart() {
+    await this.clickAddBackpackButton();
+    await this.clickAddBikeLightButton();
+    await this.clickAddTshirtButton();
+    await this.clickAddJacketButton();
+    await this.clickAddOnesieButton();
+    await this.clickAddRedTshirtButton();
   }
 
   async doubleClickBackpackButton(timeout = 5000) {
@@ -74,6 +138,16 @@ class InventoryPage {
   async clickSortProductIcon(timeout = 5000) {
     const icon = await this.driver.wait(
       until.elementLocated(this.sortIcon),
+      timeout
+    );
+
+    await this.driver.wait(until.elementIsVisible(icon), timeout);
+    await icon.click();
+  }
+
+  async clickCartIcon(timeout = 5000) {
+    const icon = await this.driver.wait(
+      until.elementLocated(this.cartIcon),
       timeout
     );
 
