@@ -41,6 +41,6 @@ export const data = {
   checkoutData: {
     firstName: "test",
     lastName: "user",
-    zipCode: "1111",
+    postalCode: "1111",
   },
 };
