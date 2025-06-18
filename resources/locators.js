@@ -55,9 +55,9 @@ export const locators = {
   },
 
   inputField: {
-    firstNameField: "first-name",
-    lastNameField: "last-name",
-    zipCodeField: "postal-code",
+    firstName: "first-name",
+    lastName: "last-name",
+    postalCode: "postal-code",
   },
 
   optionLink: {
