@@ -1,58 +1,61 @@
-const { By } = require("selenium-webdriver");
-const assert = require("assert");
 const createDriver = require("../resources/driver.js");
-const { locators } = require("../resources/locators.js");
 const { data } = require("../resources/data.js");
 const { expectedUrl } = require("../resources/expectedUrl.js");
 const { errorMessage } = require("../resources/errorMessage.js");
+const { expect } = require("chai");
+const LoginPage = require("../page/loginPage.js");
+const InventoryPage = require("../page/inventoryPage.js");
+const CartPage = require("../page/cartPage.js");
+const CheckoutPage = require("../page/CheckoutPage.js");
+const AlertComponent = require("../page/components/AlertComponent.js");
+const PriceComponent = require("../page/components/PriceComponent.js");
+
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
 
 describe("Test the functionality of checkout feature with empty product", async function () {
   this.timeout(30000);
   let driver;
+  let loginPage;
+  let inventoryPage;
+  let cartPage;
+  let alertComponent;
 
-  beforeEach(async () => {
+  before(async () => {
     try {
       driver = await createDriver();
       await driver.get(BASE_URL);
 
-      await driver
-        .findElement(By.id(locators.login.username))
-        .sendKeys(data.login.standardUser);
-      await driver
-        .findElement(By.id(locators.login.password))
-        .sendKeys(data.login.password);
-      await driver.findElement(By.id(locators.login.buttonLogin)).click();
+      loginPage = new LoginPage(driver);
+      inventoryPage = new InventoryPage(driver);
+      cartPage = new CartPage(driver);
+      alertComponent = new AlertComponent(driver);
 
-      const getUrl = await driver.getCurrentUrl();
-      const getExpectedUrl = expectedUrl.inventoryUrl;
-      assert.equal(getUrl, getExpectedUrl);
+      await loginPage.login(data.login.standardUser, data.login.password);
+
+      const getURL = await driver.getCurrentUrl();
+      const expectedURL = expectedUrl.inventoryUrl;
+      expect(getURL).to.equal(expectedURL);
     } catch (err) {
       throw err;
     }
   });
 
   it.skip("TC_CHECKOUT_001 - Failed redirected to the Checkout page by clicking the 'Checkout' button on the Cart page when the cart is empty", async () => {
-    await driver.findElement(By.xpath(locators.cart.cartIcon)).click();
+    await inventoryPage.clickCartIcon();
+    const url = await driver.getCurrentUrl();
+    expect(url).to.include("cart");
 
-    const getUrl = await driver.getCurrentUrl();
-    const getExpctedUrl = expectedUrl.cartPage;
-    assert.equal(getUrl, getExpctedUrl);
-
-    await driver.findElement(By.id(locators.button.checkoutButton)).click();
-    const getErrorMessage = await driver.findElement(
-      By.xpath(locators.message.errorBoxAllert)
-    );
-    const getErrorText = await getErrorMessage.getText();
-    const errorMessage =
+    await cartPage.clickCheckoutButton();
+    const message = await alertComponent.getErrorMessageText();
+    const expected =
       "Can't proceed to the checkout process. Your cart must not be empty if you want to checkout.";
-    assert.equal(getErrorText, errorMessage);
+    expect(message).to.equal(expected);
   });
 
   after(async () => {
     if (driver) {
-      await driver.close();
+      await driver.quit();
     }
   });
 });
@@ -60,305 +63,212 @@ describe("Test the functionality of checkout feature with empty product", async 
 describe("Test the functionality of the checkout feature with at least one product in the cart.", async function () {
   this.timeout(30000);
   let driver;
+  let loginPage;
+  let inventoryPage;
+  let cartPage;
+  let checkoutPage;
+  let alertComponent;
+  let priceComponent;
 
   beforeEach(async () => {
     driver = await createDriver();
     await driver.get(BASE_URL);
 
-    await driver
-      .findElement(By.id(locators.login.username))
-      .sendKeys(data.login.standardUser);
-    await driver
-      .findElement(By.id(locators.login.password))
-      .sendKeys(data.login.password);
-    await driver.findElement(By.id(locators.login.buttonLogin)).click();
+    loginPage = new LoginPage(driver);
+    inventoryPage = new InventoryPage(driver);
+    cartPage = new CartPage(driver);
+    checkoutPage = new CheckoutPage(driver);
+    alertComponent = new AlertComponent(driver);
+    priceComponent = new PriceComponent(driver);
 
-    const getUrl = await driver.getCurrentUrl();
-    const getExpectedUrl = expectedUrl.inventoryUrl;
-    assert.equal(getUrl, getExpectedUrl);
+    await loginPage.login(data.login.standardUser, data.login.password);
 
-    await driver
-      .findElement(By.id(locators.products.addBackpackButton))
-      .click();
-    await driver.findElement(By.id(locators.products.addOnesieButton)).click();
+    await inventoryPage.clickAddBackpackButton();
+    await inventoryPage.clickAddOnesieButton();
 
-    await driver.findElement(By.xpath(locators.cart.cartIcon)).click();
-    const getCartUrl = await driver.getCurrentUrl();
-    const cartUrl = expectedUrl.cartPage;
-    assert.equal(getCartUrl, cartUrl);
+    await inventoryPage.clickCartIcon();
+    const getURL = await driver.getCurrentUrl();
+    const expectedURL = expectedUrl.cartPage;
+    expect(getURL).to.equal(expectedURL);
   });
 
   it("TC_CHECKOUT_002 - Successfully redirected to the checkout page by clicking the 'Checkout' button on the Cart page when the cart contains products", async () => {
-    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+    await cartPage.clickCheckoutButton();
 
-    const getUrl = await driver.getCurrentUrl();
-    const url = expectedUrl.checkoutUrl;
-    assert.equal(getUrl, url);
+    const url = await driver.getCurrentUrl();
+    expect(url).to.include("checkout");
   });
 
   it("TC_CHECKOUT_003 - Successfully completed the product checkout.", async () => {
-    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+    await cartPage.clickCheckoutButton();
 
-    const getUrl = await driver.getCurrentUrl();
-    const url = expectedUrl.checkoutUrl;
-    assert.equal(getUrl, url);
+    const url = await driver.getCurrentUrl();
+    expect(url).to.include("checkout");
 
-    await driver
-      .findElement(By.id(locators.inputField.firstNameField))
-      .sendKeys(data.checkoutData.firstName);
-    await driver
-      .findElement(By.id(locators.inputField.lastNameField))
-      .sendKeys(data.checkoutData.lastName);
-    await driver
-      .findElement(By.id(locators.inputField.zipCodeField))
-      .sendKeys(data.checkoutData.zipCode);
+    await checkoutPage.fillCheckoutForm(
+      data.checkoutData.firstName,
+      data.checkoutData.lastName,
+      data.checkoutData.postalCode
+    );
+    await checkoutPage.clickContinueCheckout();
 
-    await driver.findElement(By.id(locators.button.continueCheckout)).click();
-
-    const getPaymentUrl = await driver.getCurrentUrl();
-    const paymentUrl = expectedUrl.paymentUrl;
-    assert.equal(getPaymentUrl, paymentUrl);
+    const currentURL = await driver.getCurrentUrl();
+    expect(currentURL).to.include("step-two");
   });
 
   it("TC_CHECKOUT_004 - Attempt to checkout the product with empty fields for first name.", async () => {
-    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+    await cartPage.clickCheckoutButton();
 
-    const getUrl = await driver.getCurrentUrl();
-    const checkoutUrl = expectedUrl.checkoutUrl;
-    assert.equal(getUrl, checkoutUrl);
+    const url = await driver.getCurrentUrl();
+    expect(url).to.include("checkout");
 
-    await driver
-      .findElement(By.id(locators.inputField.lastNameField))
-      .sendKeys(data.checkoutData.lastName);
-    await driver
-      .findElement(By.id(locators.inputField.zipCodeField))
-      .sendKeys(data.checkoutData.zipCode);
-    await driver.findElement(By.id(locators.button.continueCheckout)).click();
-
-    const getErrorElement = await driver.findElement(
-      By.xpath(locators.message.errorBoxAllert)
+    await checkoutPage.checkoutWithEmptyFirstName(
+      data.checkoutData.lastName,
+      data.checkoutData.postalCode
     );
-    const getErrorMessage = await getErrorElement.getText();
-    const message = errorMessage.requiredFirstName;
-    assert.strictEqual(getErrorMessage, message);
+    await checkoutPage.clickContinueCheckout();
+
+    const message = await alertComponent.getErrorMessageText();
+    const expected = errorMessage.requiredFirstName;
+    expect(message).to.equal(expected);
   });
 
   it("TC_CHECKOUT_005 - Attempt to checkout the product with empty fields for last name.", async () => {
-    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+    await cartPage.clickCheckoutButton();
 
-    const getUrl = await driver.getCurrentUrl();
-    const checkoutUrl = expectedUrl.checkoutUrl;
-    assert.strictEqual(getUrl, checkoutUrl);
+    const url = await driver.getCurrentUrl();
+    expect(url).to.include("checkout");
 
-    await driver
-      .findElement(By.id(locators.inputField.firstNameField))
-      .sendKeys(data.checkoutData.firstName);
-    await driver
-      .findElement(By.id(locators.inputField.zipCodeField))
-      .sendKeys(data.checkoutData.zipCode);
-    await driver.findElement(By.id(locators.button.continueCheckout)).click();
-
-    const getErrorElement = await driver.findElement(
-      By.xpath(locators.message.errorBoxAllert)
+    await checkoutPage.checkoutWithEmptyLastName(
+      data.checkoutData.firstName,
+      data.checkoutData.postalCode
     );
-    const getErrorMessage = await getErrorElement.getText();
-    const message = errorMessage.requiredLastName;
-    assert.strictEqual(getErrorMessage, message);
+    await checkoutPage.clickContinueCheckout();
+
+    const message = await alertComponent.getErrorMessageText();
+    const expected = errorMessage.requiredLastName;
+    expect(message).to.equal(expected);
   });
 
   it("TC_CHECKOUT_006 - Attempt to checkout the product with empty fields for zip/postal code.", async () => {
-    await driver.findElement(By.id(locators.button.checkoutButton)).click();
-    const getUrl = await driver.getCurrentUrl();
-    const checkoutUrl = expectedUrl.checkoutUrl;
-    assert.strictEqual(getUrl, checkoutUrl);
+    await cartPage.clickCheckoutButton();
 
-    await driver
-      .findElement(By.id(locators.inputField.firstNameField))
-      .sendKeys(data.checkoutData.firstName);
-    await driver
-      .findElement(By.id(locators.inputField.lastNameField))
-      .sendKeys(data.checkoutData.lastName);
-    await driver.findElement(By.id(locators.button.continueCheckout)).click();
+    const url = await driver.getCurrentUrl();
+    expect(url).to.include("checkout");
 
-    const getErrorElement = await driver.findElement(
-      By.xpath(locators.message.errorBoxAllert)
+    await checkoutPage.checkoutWithEmptyPostalCode(
+      data.checkoutData.firstName,
+      data.checkoutData.lastName
     );
-    const getErrorMessage = await getErrorElement.getText();
-    const message = errorMessage.requiredPostalCode;
-    assert.strictEqual(getErrorMessage, message);
+    await checkoutPage.clickContinueCheckout();
+
+    const message = await alertComponent.getErrorMessageText();
+    const expected = errorMessage.requiredPostalCode;
+    expect(message).to.equal(expected);
   });
 
   it("TC_CHECKOUT_007 - Redirect to the Cart page if the user cancels the checkout on the Checkout page.", async () => {
-    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+    await cartPage.clickCheckoutButton();
+    const url = await driver.getCurrentUrl();
+    expect(url).to.include("checkout");
 
-    const getUrl = await driver.getCurrentUrl();
-    const checkoutUrl = expectedUrl.checkoutUrl;
-    assert.strictEqual(getUrl, checkoutUrl);
+    await checkoutPage.clickCancelCheckout();
 
-    await driver.findElement(By.id(locators.button.cancelCheckout)).click();
-
-    const getActiveUrl = await driver.getCurrentUrl();
-    const cartUrl = expectedUrl.cartPage;
-    assert.strictEqual(getActiveUrl, cartUrl);
+    const currentURL = await driver.getCurrentUrl();
+    const expectedURL = expectedUrl.cartPage;
+    expect(currentURL).to.equal(expectedURL);
   });
 
   it("TC_CHECKOUT_008 - Redirect to the Inventory page if the users cancels the checkout on the Payment page.", async () => {
-    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+    await cartPage.clickCheckoutButton();
 
-    const checkoutPageUrl = await driver.getCurrentUrl();
-    const expectedCheckoutUrl = expectedUrl.checkoutUrl;
-    assert.strictEqual(checkoutPageUrl, expectedCheckoutUrl);
+    const url = await driver.getCurrentUrl();
+    expect(url).to.include("checkout");
 
-    await driver
-      .findElement(By.id(locators.inputField.firstNameField))
-      .sendKeys(data.checkoutData.firstName);
-    await driver
-      .findElement(By.id(locators.inputField.lastNameField))
-      .sendKeys(data.checkoutData.lastName);
-    await driver
-      .findElement(By.id(locators.inputField.zipCodeField))
-      .sendKeys(data.checkoutData.zipCode);
-    await driver.findElement(By.id(locators.button.continueCheckout)).click();
+    await checkoutPage.fillCheckoutForm(
+      data.checkoutData.firstName,
+      data.checkoutData.lastName,
+      data.checkoutData.postalCode
+    );
+    await checkoutPage.clickContinueCheckout();
 
-    const paymentUrl = await driver.getCurrentUrl();
-    const expectedPaymentUrl = expectedUrl.paymentUrl;
-    assert.strictEqual(paymentUrl, expectedPaymentUrl);
+    const currentURL = await driver.getCurrentUrl();
+    expect(currentURL).to.include("step-two");
 
-    await driver.findElement(By.id(locators.button.cancelCheckout)).click();
-
-    const inventoryUrl = await driver.getCurrentUrl();
-    const expectedInventoryUrl = expectedUrl.inventoryUrl;
-    assert.strictEqual(inventoryUrl, expectedInventoryUrl);
+    await checkoutPage.clickCancelCheckout();
+    const actualURL = await driver.getCurrentUrl();
+    const expectedURL = expectedUrl.inventoryUrl;
+    expect(actualURL).to.equal(expectedURL);
   });
 
   it("TC_CHECKOUT_009 - Correctly calculate the item total for product purchased on the Payment page.", async () => {
-    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+    await cartPage.clickCheckoutButton();
 
-    const checkoutUrl = await driver.getCurrentUrl();
-    const expectedCheckoutUrl = expectedUrl.checkoutUrl;
-    assert.strictEqual(checkoutUrl, expectedCheckoutUrl);
+    const url = await driver.getCurrentUrl();
+    expect(url).to.include("checkout");
 
-    await driver
-      .findElement(By.id(locators.inputField.firstNameField))
-      .sendKeys(data.checkoutData.firstName);
-    await driver
-      .findElement(By.id(locators.inputField.lastNameField))
-      .sendKeys(data.checkoutData.lastName);
-    await driver
-      .findElement(By.id(locators.inputField.zipCodeField))
-      .sendKeys(data.checkoutData.zipCode);
-    await driver.findElement(By.id(locators.button.continueCheckout)).click();
-
-    const paymentUrl = await driver.getCurrentUrl();
-    const expectedPaymentUrl = expectedUrl.paymentUrl;
-    assert.strictEqual(paymentUrl, expectedPaymentUrl);
-
-    const getProductsPrice = await driver.findElements(
-      By.xpath(locators.products.detailPrice)
+    await checkoutPage.fillCheckoutForm(
+      data.checkoutData.firstName,
+      data.checkoutData.lastName,
+      data.checkoutData.postalCode
     );
+    await checkoutPage.clickContinueCheckout();
 
-    const listProductsPrice = [];
-    for (const price of getProductsPrice) {
-      const productPrice = await price.getText();
-      const convertPrice = parseFloat(productPrice.replace(/[^0-9.]/g, ""));
-      listProductsPrice.push(convertPrice);
-    }
+    const currentURL = await driver.getCurrentUrl();
+    const expectedURL = expectedUrl.paymentUrl;
+    expect(currentURL).to.equal(expectedURL);
 
-    let sum = 0;
-    listProductsPrice.forEach((price) => {
-      sum += price;
-    });
-
-    const expectedItemTotal = 37.98;
-    assert.strictEqual(sum, expectedItemTotal);
+    const totalItem = await priceComponent.calculateItemTotal();
+    expect(totalItem).to.equal(37.98);
   });
 
   it("TC_CHECKOUT_010 - Correctly calculate the total payment with tax for product purchased on the Payment page.", async () => {
-    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+    await cartPage.clickCheckoutButton();
 
-    const checkoutUrl = await driver.getCurrentUrl();
-    const expectedCheckoutUrl = expectedUrl.checkoutUrl;
-    assert.strictEqual(checkoutUrl, expectedCheckoutUrl);
+    const url = await driver.getCurrentUrl();
+    expect(url).to.include("checkout");
 
-    await driver
-      .findElement(By.id(locators.inputField.firstNameField))
-      .sendKeys(data.checkoutData.firstName);
-    await driver
-      .findElement(By.id(locators.inputField.lastNameField))
-      .sendKeys(data.checkoutData.lastName);
-    await driver
-      .findElement(By.id(locators.inputField.zipCodeField))
-      .sendKeys(data.checkoutData.zipCode);
-    await driver.findElement(By.id(locators.button.continueCheckout)).click();
-
-    const paymentUrl = await driver.getCurrentUrl();
-    const expectedPaymentUrl = expectedUrl.paymentUrl;
-    assert.strictEqual(paymentUrl, expectedPaymentUrl);
-
-    const getProductsPrice = await driver.findElements(
-      By.xpath(locators.products.detailPrice)
+    await checkoutPage.fillCheckoutForm(
+      data.checkoutData.firstName,
+      data.checkoutData.lastName,
+      data.checkoutData.postalCode
     );
+    await checkoutPage.clickContinueCheckout();
 
-    const listProductsPrice = [];
-    for (const price of getProductsPrice) {
-      const productPrice = await price.getText();
-      const convertPrice = parseFloat(productPrice.replace(/[^0-9.]/g, ""));
-      listProductsPrice.push(convertPrice);
-    }
+    const currentURL = await driver.getCurrentUrl();
+    const expectedURL = expectedUrl.paymentUrl;
+    expect(currentURL).to.equal(expectedURL);
 
-    const getTax = await driver.findElement(
-      By.xpath(locators.products.taxLabel)
-    );
-    const taxLabel = await getTax.getText();
-    const convertTax = parseFloat(taxLabel.replace(/[^0-9.]/g, ""));
-
-    let sum = 0;
-    listProductsPrice.forEach((price) => {
-      sum += price;
-    });
-
-    const totalPayment = parseFloat((sum + convertTax).toFixed(2));
-    const expectedTotalPayment = 41.02;
-    assert.strictEqual(totalPayment, expectedTotalPayment);
+    const totalPayment = await priceComponent.calculateTotalPayment();
+    expect(totalPayment).to.equal("41.02");
   });
 
   it("TC_CHECKOUT_011 - Display a success message after the user successfully completes the checkout and payment process.", async () => {
-    await driver.findElement(By.id(locators.button.checkoutButton)).click();
+    await cartPage.clickCheckoutButton();
+    const url = await driver.getCurrentUrl();
+    expect(url).to.include("checkout");
 
-    const checkoutUrl = await driver.getCurrentUrl();
-    const expectedCheckoutUrl = expectedUrl.checkoutUrl;
-    assert.strictEqual(checkoutUrl, expectedCheckoutUrl);
-
-    await driver
-      .findElement(By.id(locators.inputField.firstNameField))
-      .sendKeys(data.checkoutData.firstName);
-    await driver
-      .findElement(By.id(locators.inputField.lastNameField))
-      .sendKeys(data.checkoutData.lastName);
-    await driver
-      .findElement(By.id(locators.inputField.zipCodeField))
-      .sendKeys(data.checkoutData.zipCode);
-    await driver.findElement(By.id(locators.button.continueCheckout)).click();
-
-    const paymentUrl = await driver.getCurrentUrl();
-    const expectedPaymentUrl = expectedUrl.paymentUrl;
-    assert.strictEqual(paymentUrl, expectedPaymentUrl);
-
-    await driver
-      .findElement(By.id(locators.button.finishPaymentButton))
-      .click();
-
-    const getCompleteOrderElement = await driver.findElement(
-      By.xpath(locators.message.completeOrder)
+    await checkoutPage.fillCheckoutForm(
+      data.checkoutData.firstName,
+      data.checkoutData.lastName,
+      data.checkoutData.postalCode
     );
-    const getCompleteOrderText = await getCompleteOrderElement.getText();
-    const completeOrderText = "Thank you for your order!";
-    assert.strictEqual(getCompleteOrderText, completeOrderText);
+    await checkoutPage.clickContinueCheckout();
+
+    const currentURL = await driver.getCurrentUrl();
+    const expectedURL = expectedUrl.paymentUrl;
+    expect(currentURL).to.equal(expectedURL);
+
+    await checkoutPage.clickFinishPayment();
+
+    const message = await checkoutPage.getCompleteOrderMessage();
+    const expectedMessage = "Thank you for your order!";
+    expect(message).to.deep.equal(expectedMessage);
   });
 
   afterEach(async () => {
     if (driver) {
-      await driver.close();
+      await driver.quit();
     }
   });
 });
