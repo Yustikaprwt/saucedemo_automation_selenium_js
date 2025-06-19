@@ -1,61 +1,55 @@
-const { By, until } = require("selenium-webdriver");
-const assert = require("assert");
 const createDriver = require("../resources/driver.js");
-const { locators } = require("../resources/locators.js");
 const { data } = require("../resources/data.js");
 const { expectedUrl } = require("../resources/expectedUrl.js");
+const { errorMessage } = require("../resources/errorMessage.js");
+const { expect } = require("chai");
+const LoginPage = require("../page/LoginPage.js");
+const InventoryPage = require("../page/InventoryPage.js");
+const AlertComponent = require("../page/components/AlertComponent.js");
+
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
 
 describe("Test the functionality of the logout feature.", async function () {
-  this.timeout(30000);
+  this.timeout(8000);
   let driver;
+  let loginPage;
+  let inventoryPage;
+  let alertComponent;
 
   before(async () => {
     try {
       driver = await createDriver();
+      loginPage = new LoginPage(driver);
+      inventoryPage = new InventoryPage(driver);
+      alertComponent = new AlertComponent(driver);
 
       await driver.get(BASE_URL);
-      const loginUrl = await driver.getCurrentUrl();
-      const expectedLoginUrl = expectedUrl.loginUrl;
-      assert.strictEqual(loginUrl, expectedLoginUrl);
 
-      await driver
-        .findElement(By.id(locators.login.username))
-        .sendKeys(data.login.standardUser);
-      await driver
-        .findElement(By.id(locators.login.password))
-        .sendKeys(data.login.password);
-      await driver.findElement(By.id(locators.login.buttonLogin)).click();
-
-      const inventoryUrl = await driver.getCurrentUrl();
-      const expectedInventoryUrl = expectedUrl.inventoryUrl;
-      assert.strictEqual(inventoryUrl, expectedInventoryUrl);
+      await loginPage.login(data.login.standardUser, data.login.password);
+      const url = await driver.getCurrentUrl();
+      expect(url).to.include("inventory");
     } catch (err) {
       throw err;
     }
   });
 
   it("TC_LOGOUT_001 - Redirected to the login page after logout account", async () => {
-    const burgerMenu = await driver.wait(
-      until.elementIsVisible(
-        driver.findElement(By.id(locators.button.burgerMenuButton))
-      ),
-      5000
-    );
-    await burgerMenu.click();
+    await inventoryPage.clickLogout();
 
-    const logoutLink = await driver.wait(
-      until.elementIsVisible(
-        driver.findElement(By.id(locators.optionLink.logoutLink))
-      ),
-      5000
-    );
-    await logoutLink.click();
+    const url = await driver.getCurrentUrl();
+    const expectedURL = expectedUrl.loginUrl;
+    expect(url).to.equal(expectedURL);
+  });
 
-    const loginUrl = await driver.getCurrentUrl();
-    const expectedLoginUrl = expectedUrl.loginUrl;
-    assert.strictEqual(loginUrl, expectedLoginUrl);
+  it("TC_LOGOUT_002 - Display an error message when the user clicks the browser back button after logout account", async () => {
+    await inventoryPage.clickLogout();
+
+    await driver.navigate().back();
+
+    const message = await alertComponent.getErrorMessageText();
+    const expectedMessage = errorMessage.unauthorizedBackNavigation;
+    expect(message).to.equal(expectedMessage);
   });
 
   after(async () => {
