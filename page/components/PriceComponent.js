@@ -38,6 +38,25 @@ class PriceComponent {
     }
   }
 
+  async getListProductPriceInString(timeout = 5000) {
+    const listProductPrice = await this.driver.wait(
+      until.elementsLocated(this.productPrice),
+      timeout
+    );
+
+    for (const productsPrice of listProductPrice) {
+      await this.driver.wait(until.elementIsVisible(productsPrice), timeout);
+
+      const prices = [];
+      for (const elements of listProductPrice) {
+        const price = await elements.getText();
+        prices.push(price);
+      }
+
+      return prices;
+    }
+  }
+
   async calculateItemTotal() {
     const productsPrice = await this.getListProductPrice();
 
