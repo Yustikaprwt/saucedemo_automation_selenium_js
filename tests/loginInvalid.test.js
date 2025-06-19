@@ -5,14 +5,18 @@ const { errorMessage } = require("../resources/errorMessage.js");
 const { expectedUrl } = require("../resources/expectedUrl.js");
 const LoginPage = require("../page/LoginPage.js");
 const InventoryPage = require("../page/InventoryPage.js");
+const AlertComponent = require("../page/components/AlertComponent.js");
 
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
 
 describe("Login with invalid credentials", async function () {
+  this.timeout(10000);
+
   let driver;
   let loginPage;
   let inventoryPage;
+  let alertComponent;
 
   beforeEach(async () => {
     driver = await createDriver();
@@ -21,12 +25,13 @@ describe("Login with invalid credentials", async function () {
 
     loginPage = new LoginPage(driver);
     inventoryPage = new InventoryPage(driver);
+    alertComponent = new AlertComponent(driver);
   });
 
   it("TC_LGN_002 - Login account as user with 'locked_out_user' username and valid password", async () => {
     await loginPage.login(data.login.lockedOutUser, data.login.password);
 
-    const errorMessageText = await loginPage.getErrorMessageText();
+    const errorMessageText = await alertComponent.getErrorMessageText();
     const expectedErrorMessage = errorMessage.lockedOutUser;
 
     expect(errorMessageText).to.equal(expectedErrorMessage);
@@ -68,8 +73,6 @@ describe("Login with invalid credentials", async function () {
 
     expect(getURL).to.equal(expectedURL);
 
-    await inventoryPage.clickTshirtButton();
-
     const buttonText = await inventoryPage.getAddToCartText();
     const expectedText = data.products.addTocartTextButton;
 
@@ -87,7 +90,7 @@ describe("Login with invalid credentials", async function () {
   it("TC_LGN_007 - Login account as user with 'standard_user' username but with incorect password", async () => {
     await loginPage.login(data.login.standardUser, data.login.invalidPassword);
 
-    const errorMessageText = await loginPage.getErrorMessageText();
+    const errorMessageText = await alertComponent.getErrorMessageText();
     const expectedErrorMessage = errorMessage.invalidInput;
 
     expect(errorMessageText).to.equal(expectedErrorMessage);
@@ -96,7 +99,7 @@ describe("Login with invalid credentials", async function () {
   it("TC_LGN_008 - Login account as user using 'standard_user' username and empty password field", async () => {
     await loginPage.loginWithEmptyPassword(data.login.standardUser);
 
-    const errorMessageText = await loginPage.getErrorMessageText();
+    const errorMessageText = await alertComponent.getErrorMessageText();
     const expectedErrorText = errorMessage.requiredPassword;
 
     expect(errorMessageText).to.equal(expectedErrorText);
@@ -105,7 +108,7 @@ describe("Login with invalid credentials", async function () {
   it("TC_LGN_009 - Login account as user by input an invalid username", async () => {
     await loginPage.login(data.login.invalidUsername, data.login.password);
 
-    const errorMessageText = await loginPage.getErrorMessageText();
+    const errorMessageText = await alertComponent.getErrorMessageText();
     const expectedErrorText = errorMessage.invalidInput;
 
     expect(errorMessageText).to.equal(expectedErrorText);
@@ -114,7 +117,7 @@ describe("Login with invalid credentials", async function () {
   it("TC_LGN_010 - Login account as user with an empty username and valid password", async () => {
     await loginPage.loginWithEmptyUsername(data.login.password);
 
-    const errorMessageText = await loginPage.getErrorMessageText();
+    const errorMessageText = await alertComponent.getErrorMessageText();
     const expectedErrorMessage = errorMessage.requiredUsername;
 
     expect(errorMessageText).to.equal(expectedErrorMessage);
