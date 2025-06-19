@@ -23,6 +23,8 @@ class InventoryPage {
     this.sortedPriceAsc = By.css(locators.sortedDropdown.sortAscByPrice);
     this.sortedPriceDesc = By.css(locators.sortedDropdown.sortDescByPrice);
     this.cartIcon = By.css(locators.cart.cartIcon);
+    this.burgerMenu = By.id(locators.button.burgerMenuButton);
+    this.logoutLink = By.id(locators.optionLink.logoutLink);
   }
 
   async getInventoryTitle(timeout = 5000) {
@@ -153,6 +155,29 @@ class InventoryPage {
 
     await this.driver.wait(until.elementIsVisible(icon), timeout);
     await icon.click();
+  }
+
+  async clickBurgerMenu(timeout = 5000) {
+    const icon = await this.driver.wait(
+      until.elementLocated(this.burgerMenu),
+      timeout
+    );
+
+    await this.driver.wait(until.elementIsVisible(icon), timeout);
+    await icon.click();
+  }
+
+  async clickLogout(timeout = 5000) {
+    await this.clickBurgerMenu();
+
+    const linkText = await this.driver.wait(
+      until.elementLocated(this.logoutLink),
+      timeout
+    );
+
+    await this.driver.wait(until.elementIsVisible(linkText), timeout);
+    await this.driver.wait(until.elementIsEnabled(linkText), timeout);
+    await linkText.click();
   }
 
   async getAddToCartText(timeout = 5000) {
