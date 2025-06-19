@@ -7,7 +7,6 @@ class LoginPage {
     this.usernameField = By.id(locators.login.username);
     this.passwordField = By.id(locators.login.password);
     this.loginButton = By.id(locators.login.buttonLogin);
-    this.errorMessage = By.css(locators.message.errorBoxAllert);
   }
 
   async inputUsername(username, timeout = 5000) {
@@ -54,16 +53,6 @@ class LoginPage {
   async loginWithEmptyUsername(password) {
     await this.inputPassword(password);
     await this.clickLoginButton();
-  }
-
-  async getErrorMessageText(timeout = 5000) {
-    const errorElement = await this.driver.wait(
-      until.elementLocated(this.errorMessage),
-      timeout
-    );
-
-    await this.driver.wait(until.elementIsVisible(errorElement), timeout);
-    return await errorElement.getText();
   }
 }
 
