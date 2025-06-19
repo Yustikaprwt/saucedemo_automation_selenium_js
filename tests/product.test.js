@@ -1,9 +1,10 @@
 const createDriver = require("../resources/driver.js");
 const { data } = require("../resources/data.js");
 const { expectedUrl } = require("../resources/expectedUrl.js");
+const { expect } = require("chai");
 const InventoryPage = require("../page/InventoryPage.js");
 const LoginPage = require("../page/LoginPage.js");
-const { expect } = require("chai");
+const PriceComponent = require("../page/components/PriceComponent.js");
 
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
@@ -14,6 +15,7 @@ describe("Test the functionality of view product and product detail", async func
   let driver;
   let loginPage;
   let inventoryPage;
+  let priceComponent;
 
   beforeEach(async () => {
     try {
@@ -22,6 +24,7 @@ describe("Test the functionality of view product and product detail", async func
 
       loginPage = new LoginPage(driver);
       inventoryPage = new InventoryPage(driver);
+      priceComponent = new PriceComponent(driver);
 
       await loginPage.login(data.login.standardUser, data.login.password);
     } catch (err) {
@@ -47,7 +50,8 @@ describe("Test the functionality of view product and product detail", async func
   });
 
   it("TC_PRD_002 - Display the products price details on the Inventory page", async () => {
-    const listProductsPrice = await inventoryPage.getListProductsPrice();
+    const listProductsPrice =
+      await priceComponent.getListProductPriceInString();
     expect(listProductsPrice).to.be.an("array").and.have.lengthOf(6);
 
     const expectedProductsPrice = [
@@ -73,7 +77,7 @@ describe("Test the functionality of view product and product detail", async func
     const expectedProductDesc = data.products.backpackDesc;
     expect(productDesc).to.equal(expectedProductDesc);
 
-    const productPrice = await inventoryPage.getProductPrice();
+    const productPrice = await priceComponent.getProductPrice();
     const expectedProductPrice = data.products.backpackPrice;
     expect(productPrice).to.equal(expectedProductPrice);
   });
