@@ -3,15 +3,16 @@ const { data } = require("../resources/data.js");
 const { expectedUrl } = require("../resources/expectedUrl.js");
 const { errorMessage } = require("../resources/errorMessage.js");
 const { expect } = require("chai");
-const LoginPage = require("../page/LoginPage.js");
-const InventoryPage = require("../page/InventoryPage.js");
-const AlertComponent = require("../page/components/AlertComponent.js");
+const LoginPage = require("../pages/LoginPage.js");
+const InventoryPage = require("../pages/InventoryPage.js");
+const AlertComponent = require("../pages/components/AlertComponent.js");
 
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
 
 describe("Test the functionality of the logout feature.", async function () {
-  this.timeout(8000);
+  this.timeout(10000);
+
   let driver;
   let loginPage;
   let inventoryPage;

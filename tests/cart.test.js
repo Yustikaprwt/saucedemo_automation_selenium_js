@@ -1,16 +1,16 @@
 const createDriver = require("../resources/driver.js");
 const { data } = require("../resources/data.js");
 const { expectedUrl } = require("../resources/expectedUrl.js");
-const LoginPage = require("../page/LoginPage.js");
-const InventoryPage = require("../page/InventoryPage.js");
 const { expect } = require("chai");
-const CartPage = require("../page/cartPage.js");
+const LoginPage = require("../pages/LoginPage.js");
+const InventoryPage = require("../pages/InventoryPage.js");
+const CartPage = require("../pages/CartPage.js");
 
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
 
 describe("Test the functionality of cart", async function () {
-  this.timeout(60000);
+  this.timeout(10000);
 
   let driver;
   let loginPage;

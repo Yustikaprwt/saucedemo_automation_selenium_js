@@ -3,9 +3,9 @@ const { expect } = require("chai");
 const { data } = require("../resources/data.js");
 const { errorMessage } = require("../resources/errorMessage.js");
 const { expectedUrl } = require("../resources/expectedUrl.js");
-const LoginPage = require("../page/LoginPage.js");
-const InventoryPage = require("../page/InventoryPage.js");
-const AlertComponent = require("../page/components/AlertComponent.js");
+const LoginPage = require("../pages/LoginPage.js");
+const InventoryPage = require("../pages/InventoryPage.js");
+const AlertComponent = require("../pages/components/AlertComponent.js");
 
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;

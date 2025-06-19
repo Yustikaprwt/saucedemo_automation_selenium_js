@@ -2,13 +2,15 @@ const { expect } = require("chai");
 const createDriver = require("../resources/driver.js");
 const { data } = require("../resources/data.js");
 const { expectedUrl } = require("../resources/expectedUrl.js");
-const LoginPage = require("../page/LoginPage.js");
-const InventoryPage = require("../page/InventoryPage.js");
+const LoginPage = require("../pages/LoginPage.js");
+const InventoryPage = require("../pages/InventoryPage.js");
 
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
 
 describe("Login with valid credentials", async function () {
+  this.timeout(10000);
+
   let driver;
   let loginPage;
   let inventoryPage;

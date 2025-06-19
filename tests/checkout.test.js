@@ -3,18 +3,19 @@ const { data } = require("../resources/data.js");
 const { expectedUrl } = require("../resources/expectedUrl.js");
 const { errorMessage } = require("../resources/errorMessage.js");
 const { expect } = require("chai");
-const LoginPage = require("../page/LoginPage.js");
-const InventoryPage = require("../page/InventoryPage.js");
-const CartPage = require("../page/CartPage.js");
-const CheckoutPage = require("../page/CheckoutPage.js");
-const AlertComponent = require("../page/components/AlertComponent.js");
-const PriceComponent = require("../page/components/PriceComponent.js");
+const LoginPage = require("../pages/LoginPage.js");
+const InventoryPage = require("../pages/InventoryPage.js");
+const CartPage = require("../pages/CartPage.js");
+const CheckoutPage = require("../pages/CheckoutPage.js");
+const AlertComponent = require("../pages/components/AlertComponent.js");
+const PriceComponent = require("../pages/components/PriceComponent.js");
 
 require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
 
 describe("Test the functionality of checkout feature with empty product", async function () {
-  this.timeout(30000);
+  this.timeout(10000);
+
   let driver;
   let loginPage;
   let inventoryPage;
