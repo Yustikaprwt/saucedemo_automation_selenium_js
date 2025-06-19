@@ -7,4 +7,6 @@ export const errorMessage = {
   requiredFirstName: "Error: First Name is required",
   requiredLastName: "Error: Last Name is required",
   requiredPostalCode: "Error: Postal Code is required",
+  unauthorizedBackNavigation:
+    "Epic sadface: You can only access '/inventory.html' when you are logged in.",
 };
