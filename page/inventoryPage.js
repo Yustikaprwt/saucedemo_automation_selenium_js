@@ -13,7 +13,6 @@ class InventoryPage {
     this.addRedTshirtButton = By.id(locators.products.addRedTshirtButton);
     this.removeProductButton = By.id(locators.products.removeBackpackButton);
     this.productsName = By.css(locators.products.detailProductsName);
-    this.productsPrice = By.css(locators.products.detailPrice);
     this.productImg = By.className(locators.products.detailProductsImg);
     this.productDesc = By.css(locators.products.detailDesc);
     this.backButton = By.css(locators.button.backToProductsButton);
@@ -226,35 +225,6 @@ class InventoryPage {
       names.push(name);
     }
     return names;
-  }
-
-  async getProductPrice(timeout = 5000) {
-    const price = await this.driver.wait(
-      until.elementLocated(this.productsPrice),
-      timeout
-    );
-
-    await this.driver.wait(until.elementIsVisible(price), timeout);
-    return await price.getText();
-  }
-
-  async getListProductsPrice(timeout = 5000) {
-    const listProductsPrice = await this.driver.wait(
-      until.elementsLocated(this.productsPrice),
-      timeout
-    );
-
-    for (const productPrice of listProductsPrice) {
-      await this.driver.wait(until.elementIsVisible(productPrice), timeout);
-    }
-
-    const prices = [];
-    for (const elements of listProductsPrice) {
-      const price = await elements.getText();
-      prices.push(price);
-    }
-
-    return prices;
   }
 
   async getProductDesc(timeout = 5000) {
